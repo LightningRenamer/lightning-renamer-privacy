@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>用户协议 - Power Renamer</title>
+        <title>Terms of Service - Power Renamer</title>
         <style>
             * {
                 margin: 0;
@@ -46,6 +46,7 @@
             .nav-links {
                 display: flex;
                 gap: 2rem;
+                align-items: center;
             }
 
             .nav-links a {
@@ -56,6 +57,19 @@
 
             .nav-links a:hover {
                 color: #2196f3;
+            }
+
+            .language-switch {
+                background: #f0f0f0;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .language-switch:hover {
+                background: #e0e0e0;
             }
 
             .main {
@@ -86,6 +100,10 @@
                 padding-left: 2rem;
             }
 
+            [lang='en'] {
+                display: none;
+            }
+
             @media (max-width: 768px) {
                 .main {
                     margin: 4rem 1rem 2rem;
@@ -99,64 +117,138 @@
             <nav class="nav">
                 <a href="index.html" class="logo">Power Renamer</a>
                 <div class="nav-links">
-                    <a href="privacy.html">隐私政策</a>
-                    <a href="terms.html">用户协议</a>
+                    <a href="privacy.html" data-lang="zh">隐私政策</a>
+                    <a href="privacy.html" data-lang="en">Privacy Policy</a>
+                    <a href="terms.html" data-lang="zh">用户协议</a>
+                    <a href="terms.html" data-lang="en">Terms of Service</a>
+                    <button class="language-switch" onclick="toggleLanguage()">EN/中文</button>
                 </div>
             </nav>
         </header>
 
         <main class="main">
-            <h1>用户协议</h1>
+            <h1 data-lang="zh">用户协议</h1>
+            <h1 data-lang="en">Terms of Service</h1>
 
-            <p>欢迎使用 Power Renamer。请仔细阅读以下条款，使用本应用即表示您同意接受这些条款的约束。</p>
+            <p data-lang="zh">欢迎使用 Power Renamer。请仔细阅读以下条款，使用本应用即表示您同意接受这些条款的约束。</p>
+            <p data-lang="en">Welcome to Power Renamer. Please read these terms carefully. By using this application, you agree to be bound by these terms.</p>
 
-            <h2>1. 服务说明</h2>
-            <p>Power Renamer 是一款文件批量重命名工具，提供以下功能：</p>
+            <h2 data-lang="zh">1. 服务说明</h2>
+            <h2 data-lang="en">1. Service Description</h2>
+            <p data-lang="zh">Power Renamer 是一款文件批量重命名工具，提供以下功能：</p>
+            <p data-lang="en">Power Renamer is a batch file renaming tool that provides the following features:</p>
             <ul>
-                <li>批量文件重命名</li>
-                <li>自定义重命名规则</li>
-                <li>预览重命名结果</li>
-                <li>撤销重命名操作</li>
+                <li data-lang="zh">批量文件重命名</li>
+                <li data-lang="en">Batch file renaming</li>
+                <li data-lang="zh">自定义重命名规则</li>
+                <li data-lang="en">Custom renaming rules</li>
+                <li data-lang="zh">预览重命名结果</li>
+                <li data-lang="en">Preview renaming results</li>
+                <li data-lang="zh">撤销重命名操作</li>
+                <li data-lang="en">Undo renaming operations</li>
             </ul>
 
-            <h2>2. 用户责任</h2>
-            <p>使用本应用时，您同意：</p>
+            <h2 data-lang="zh">2. 用户责任</h2>
+            <h2 data-lang="en">2. User Responsibilities</h2>
+            <p data-lang="zh">使用本应用时，您同意：</p>
+            <p data-lang="en">By using this application, you agree to:</p>
             <ul>
-                <li>在重命名操作前备份重要文件</li>
-                <li>不使用本应用进行任何违法或不当行为</li>
-                <li>不尝试破解或修改应用程序</li>
-                <li>遵守相关法律法规</li>
+                <li data-lang="zh">在重命名操作前备份重要文件</li>
+                <li data-lang="en">Backup important files before renaming operations</li>
+                <li data-lang="zh">不使用本应用进行任何违法或不当行为</li>
+                <li data-lang="en">Not use this application for any illegal or improper purposes</li>
+                <li data-lang="zh">不尝试破解或修改应用程序</li>
+                <li data-lang="en">Not attempt to crack or modify the application</li>
+                <li data-lang="zh">遵守相关法律法规</li>
+                <li data-lang="en">Comply with relevant laws and regulations</li>
             </ul>
 
-            <h2>3. 免责声明</h2>
-            <p>我们努力确保服务的可靠性，但不对以下情况承担责任：</p>
+            <h2 data-lang="zh">3. 免责声明</h2>
+            <h2 data-lang="en">3. Disclaimer</h2>
+            <p data-lang="zh">我们努力确保服务的可靠性，但不对以下情况承担责任：</p>
+            <p data-lang="en">While we strive to ensure the reliability of our service, we are not responsible for:</p>
             <ul>
-                <li>因操作失误导致的文件丢失或损坏</li>
-                <li>因系统故障造成的服务中断</li>
-                <li>因不可抗力导致的任何损失</li>
+                <li data-lang="zh">因操作失误导致的文件丢失或损坏</li>
+                <li data-lang="en">File loss or damage due to operational errors</li>
+                <li data-lang="zh">因系统故障造成的服务中断</li>
+                <li data-lang="en">Service interruptions due to system failures</li>
+                <li data-lang="zh">因不可抗力导致的任何损失</li>
+                <li data-lang="en">Any losses caused by force majeure</li>
             </ul>
 
-            <h2>4. 知识产权</h2>
-            <p>本应用的所有权利（包括但不限于）：</p>
+            <h2 data-lang="zh">4. 知识产权</h2>
+            <h2 data-lang="en">4. Intellectual Property</h2>
+            <p data-lang="zh">本应用的所有权利（包括但不限于）：</p>
+            <p data-lang="en">All rights to this application (including but not limited to):</p>
             <ul>
-                <li>应用程序代码和算法</li>
-                <li>用户界面设计</li>
-                <li>文档和说明材料</li>
+                <li data-lang="zh">应用程序代码和算法</li>
+                <li data-lang="en">Application code and algorithms</li>
+                <li data-lang="zh">用户界面设计</li>
+                <li data-lang="en">User interface design</li>
+                <li data-lang="zh">文档和说明材料</li>
+                <li data-lang="en">Documentation and instructional materials</li>
             </ul>
-            <p>均归开发者所有。未经许可，不得复制、修改或分发。</p>
+            <p data-lang="zh">均归开发者所有。未经许可，不得复制、修改或分发。</p>
+            <p data-lang="en">belong to the developer. Unauthorized copying, modification, or distribution is prohibited.</p>
 
-            <h2>5. 服务变更</h2>
-            <p>我们保留以下权利：</p>
+            <h2 data-lang="zh">5. 服务变更</h2>
+            <h2 data-lang="en">5. Service Changes</h2>
+            <p data-lang="zh">我们保留以下权利：</p>
+            <p data-lang="en">We reserve the right to:</p>
             <ul>
-                <li>更新应用程序和用户协议</li>
-                <li>要求用户更新到最新版本</li>
+                <li data-lang="zh">更新应用程序和用户协议</li>
+                <li data-lang="en">Update the application and terms of service</li>
+                <li data-lang="zh">要求用户更新到最新版本</li>
+                <li data-lang="en">Require users to update to the latest version</li>
             </ul>
 
-            <h2>6. 协议修改</h2>
-            <p>我们可能会不时修改本协议。修改后的协议将在应用程序或网站上公布，继续使用本应用即表示您同意接受修改后的条款。</p>
+            <h2 data-lang="zh">6. 协议修改</h2>
+            <h2 data-lang="en">6. Terms Modification</h2>
+            <p data-lang="zh">我们可能会不时修改本协议。修改后的协议将在应用程序或网站上公布，继续使用本应用即表示您同意接受修改后的条款。</p>
+            <p data-lang="en">
+                We may modify these terms from time to time. Modified terms will be posted in the application or on the website. Continued use of the application indicates your acceptance of the
+                modified terms.
+            </p>
 
-            <h2>7. 联系方式</h2>
-            <p>如果您对本协议有任何疑问，请通过应用程序的"关于"页面联系我们。</p>
+            <h2 data-lang="zh">7. 联系方式</h2>
+            <h2 data-lang="en">7. Contact Information</h2>
+            <p data-lang="zh">如果您对本协议有任何疑问，请通过应用程序的"关于"页面联系我们。</p>
+            <p data-lang="en">If you have any questions about these terms, please contact us through the "About" page in the application.</p>
         </main>
+
+        <script>
+            function toggleLanguage() {
+                const currentLang = document.documentElement.lang;
+                const newLang = currentLang === 'zh' ? 'en' : 'zh';
+                document.documentElement.lang = newLang;
+
+                // 更新所有带有 data-lang 属性的元素的显示状态
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    if (el.getAttribute('data-lang') === newLang) {
+                        el.style.display = '';
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+
+                // 保存语言偏好
+                localStorage.setItem('preferred-language', newLang);
+            }
+
+            // 页面加载时检查并应用保存的语言偏好
+            document.addEventListener('DOMContentLoaded', () => {
+                const savedLang = localStorage.getItem('preferred-language');
+                if (savedLang && savedLang !== document.documentElement.lang) {
+                    document.documentElement.lang = savedLang;
+                    document.querySelectorAll('[data-lang]').forEach(el => {
+                        if (el.getAttribute('data-lang') === savedLang) {
+                            el.style.display = '';
+                        } else {
+                            el.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

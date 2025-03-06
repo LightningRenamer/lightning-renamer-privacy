@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>隐私政策 - Power Renamer</title>
+        <title>Privacy Policy - Power Renamer</title>
         <style>
             * {
                 margin: 0;
@@ -46,6 +46,7 @@
             .nav-links {
                 display: flex;
                 gap: 2rem;
+                align-items: center;
             }
 
             .nav-links a {
@@ -56,6 +57,19 @@
 
             .nav-links a:hover {
                 color: #2196f3;
+            }
+
+            .language-switch {
+                background: #f0f0f0;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .language-switch:hover {
+                background: #e0e0e0;
             }
 
             .main {
@@ -86,6 +100,10 @@
                 padding-left: 2rem;
             }
 
+            [lang='en'] {
+                display: none;
+            }
+
             @media (max-width: 768px) {
                 .main {
                     margin: 4rem 1rem 2rem;
@@ -99,59 +117,125 @@
             <nav class="nav">
                 <a href="index.html" class="logo">Power Renamer</a>
                 <div class="nav-links">
-                    <a href="privacy.html">隐私政策</a>
-                    <a href="terms.html">用户协议</a>
+                    <a href="privacy.html" data-lang="zh">隐私政策</a>
+                    <a href="privacy.html" data-lang="en">Privacy Policy</a>
+                    <a href="terms.html" data-lang="zh">用户协议</a>
+                    <a href="terms.html" data-lang="en">Terms of Service</a>
+                    <button class="language-switch" onclick="toggleLanguage()">EN/中文</button>
                 </div>
             </nav>
         </header>
 
         <main class="main">
-            <h1>隐私政策</h1>
+            <h1 data-lang="zh">隐私政策</h1>
+            <h1 data-lang="en">Privacy Policy</h1>
 
-            <p>欢迎使用 Power Renamer。我们非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用和保护您的个人信息。</p>
+            <p data-lang="zh">欢迎使用 Power Renamer。我们非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用和保护您的个人信息。</p>
+            <p data-lang="en">Welcome to Power Renamer. We take your privacy very seriously. This privacy policy explains how we collect, use, and protect your personal information.</p>
 
-            <h2>信息收集</h2>
-            <p>我们只收集应用程序运行所必需的最少信息：</p>
+            <h2 data-lang="zh">信息收集</h2>
+            <h2 data-lang="en">Information Collection</h2>
+            <p data-lang="zh">我们只收集应用程序运行所必需的最少信息：</p>
+            <p data-lang="en">We only collect the minimum information necessary for the application to function:</p>
             <ul>
-                <li>文件名和路径信息（仅用于重命名操作，且仅在本地使用）</li>
+                <li data-lang="zh">文件名和路径信息（仅用于重命名操作，且仅在本地使用）</li>
+                <li data-lang="en">File names and path information (used only for renaming operations and processed locally)</li>
             </ul>
 
-            <p>此外，仅在您主动报告错误时，我们才会收集以下设备信息以帮助解决问题：</p>
+            <p data-lang="zh">此外，仅在您主动报告错误时，我们才会收集以下设备信息以帮助解决问题：</p>
+            <p data-lang="en">Additionally, only when you actively report an error, we collect the following device information to help resolve issues:</p>
             <ul>
-                <li>设备系统版本</li>
-                <li>设备制造商</li>
-                <li>设备型号</li>
+                <li data-lang="zh">设备系统版本</li>
+                <li data-lang="en">Device system version</li>
+                <li data-lang="zh">设备制造商</li>
+                <li data-lang="en">Device manufacturer</li>
+                <li data-lang="zh">设备型号</li>
+                <li data-lang="en">Device model</li>
             </ul>
 
-            <h2>信息使用</h2>
-            <p>我们收集的信息仅用于：</p>
+            <h2 data-lang="zh">信息使用</h2>
+            <h2 data-lang="en">Information Usage</h2>
+            <p data-lang="zh">我们收集的信息仅用于：</p>
+            <p data-lang="en">The information we collect is only used for:</p>
             <ul>
-                <li>执行文件重命名操作</li>
-                <li>在您主动报告时协助解决技术问题</li>
+                <li data-lang="zh">执行文件重命名操作</li>
+                <li data-lang="en">Performing file renaming operations</li>
+                <li data-lang="zh">在您主动报告时协助解决技术问题</li>
+                <li data-lang="en">Assisting with technical issues when you actively report them</li>
             </ul>
 
-            <h2>信息安全</h2>
-            <p>我们采取适当的技术和组织措施来保护您的信息：</p>
+            <h2 data-lang="zh">信息安全</h2>
+            <h2 data-lang="en">Information Security</h2>
+            <p data-lang="zh">我们采取适当的技术和组织措施来保护您的信息：</p>
+            <p data-lang="en">We take appropriate technical and organizational measures to protect your information:</p>
             <ul>
-                <li>所有操作都在本地完成，不会上传您的文件</li>
-                <li>不收集任何文件内容</li>
-                <li>不与第三方共享您的信息</li>
+                <li data-lang="zh">所有操作都在本地完成，不会上传您的文件</li>
+                <li data-lang="en">All operations are performed locally, your files are never uploaded</li>
+                <li data-lang="zh">不收集任何文件内容</li>
+                <li data-lang="en">No file contents are collected</li>
+                <li data-lang="zh">不与第三方共享您的信息</li>
+                <li data-lang="en">Your information is not shared with third parties</li>
             </ul>
 
-            <h2>您的权利</h2>
-            <p>您有权：</p>
+            <h2 data-lang="zh">您的权利</h2>
+            <h2 data-lang="en">Your Rights</h2>
+            <p data-lang="zh">您有权：</p>
+            <p data-lang="en">You have the right to:</p>
             <ul>
-                <li>访问您的个人信息</li>
-                <li>更正不准确的信息</li>
-                <li>要求删除您的信息</li>
-                <li>随时退出数据收集</li>
+                <li data-lang="zh">访问您的个人信息</li>
+                <li data-lang="en">Access your personal information</li>
+                <li data-lang="zh">更正不准确的信息</li>
+                <li data-lang="en">Correct inaccurate information</li>
+                <li data-lang="zh">要求删除您的信息</li>
+                <li data-lang="en">Request deletion of your information</li>
+                <li data-lang="zh">随时退出数据收集</li>
+                <li data-lang="en">Opt-out of data collection at any time</li>
             </ul>
 
-            <h2>政策更新</h2>
-            <p>我们可能会不时更新本隐私政策。更新后的政策将在本页面上发布，并在必要时通知您重要更改。</p>
+            <h2 data-lang="zh">政策更新</h2>
+            <h2 data-lang="en">Policy Updates</h2>
+            <p data-lang="zh">我们可能会不时更新本隐私政策。更新后的政策将在本页面上发布，并在必要时通知您重要更改。</p>
+            <p data-lang="en">We may update this privacy policy from time to time. Updated policies will be posted on this page, and you will be notified of significant changes when necessary.</p>
 
-            <h2>联系我们</h2>
-            <p>如果您对本隐私政策有任何疑问，请通过应用程序的"关于"页面联系我们。</p>
+            <h2 data-lang="zh">联系我们</h2>
+            <h2 data-lang="en">Contact Us</h2>
+            <p data-lang="zh">如果您对本隐私政策有任何疑问，请通过应用程序的"关于"页面联系我们。</p>
+            <p data-lang="en">If you have any questions about this privacy policy, please contact us through the "About" page in the application.</p>
         </main>
+
+        <script>
+            function toggleLanguage() {
+                const currentLang = document.documentElement.lang;
+                const newLang = currentLang === 'zh' ? 'en' : 'zh';
+                document.documentElement.lang = newLang;
+
+                // 更新所有带有 data-lang 属性的元素的显示状态
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    if (el.getAttribute('data-lang') === newLang) {
+                        el.style.display = '';
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+
+                // 保存语言偏好
+                localStorage.setItem('preferred-language', newLang);
+            }
+
+            // 页面加载时检查并应用保存的语言偏好
+            document.addEventListener('DOMContentLoaded', () => {
+                const savedLang = localStorage.getItem('preferred-language');
+                if (savedLang && savedLang !== document.documentElement.lang) {
+                    document.documentElement.lang = savedLang;
+                    document.querySelectorAll('[data-lang]').forEach(el => {
+                        if (el.getAttribute('data-lang') === savedLang) {
+                            el.style.display = '';
+                        } else {
+                            el.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

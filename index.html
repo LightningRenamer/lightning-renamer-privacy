@@ -46,6 +46,7 @@
             .nav-links {
                 display: flex;
                 gap: 2rem;
+                align-items: center;
             }
 
             .nav-links a {
@@ -56,6 +57,19 @@
 
             .nav-links a:hover {
                 color: #2196f3;
+            }
+
+            .language-switch {
+                background: #f0f0f0;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .language-switch:hover {
+                background: #e0e0e0;
             }
 
             .main {
@@ -106,6 +120,10 @@
                 margin-bottom: 1rem;
             }
 
+            [lang='en'] {
+                display: none;
+            }
+
             @media (max-width: 768px) {
                 .hero h1 {
                     font-size: 2rem;
@@ -127,32 +145,78 @@
             <nav class="nav">
                 <a href="#" class="logo">Power Renamer</a>
                 <div class="nav-links">
-                    <a href="privacy.html">隐私政策</a>
-                    <a href="terms.html">用户协议</a>
+                    <a href="privacy.html" data-lang="zh">隐私政策</a>
+                    <a href="privacy.html" data-lang="en">Privacy Policy</a>
+                    <a href="terms.html" data-lang="zh">用户协议</a>
+                    <a href="terms.html" data-lang="en">Terms of Service</a>
+                    <button class="language-switch" onclick="toggleLanguage()">EN/中文</button>
                 </div>
             </nav>
         </header>
 
         <main class="main">
             <section class="hero">
-                <h1>智能文件重命名工具</h1>
-                <p>简单高效的批量文件重命名解决方案，让文件管理变得轻松自如</p>
+                <h1 data-lang="zh">智能文件重命名工具</h1>
+                <h1 data-lang="en">Smart File Renaming Tool</h1>
+                <p data-lang="zh">简单高效的批量文件重命名解决方案，让文件管理变得轻松自如</p>
+                <p data-lang="en">A simple and efficient batch file renaming solution that makes file management effortless</p>
             </section>
 
             <section class="features">
                 <div class="feature-card">
-                    <h3>批量重命名</h3>
-                    <p>支持多种重命名规则，轻松处理大量文件，节省您的宝贵时间。</p>
+                    <h3 data-lang="zh">批量重命名</h3>
+                    <h3 data-lang="en">Batch Rename</h3>
+                    <p data-lang="zh">支持多种重命名规则，轻松处理大量文件，节省您的宝贵时间。</p>
+                    <p data-lang="en">Supports various renaming rules, easily handles large numbers of files, saving your valuable time.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>智能规则</h3>
-                    <p>内置多种智能规则模板，支持自定义规则，满足各种重命名需求。</p>
+                    <h3 data-lang="zh">智能规则</h3>
+                    <h3 data-lang="en">Smart Rules</h3>
+                    <p data-lang="zh">内置多种智能规则模板，支持自定义规则，满足各种重命名需求。</p>
+                    <p data-lang="en">Built-in smart rule templates, supports custom rules to meet various renaming needs.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>安全可靠</h3>
-                    <p>支持预览和撤销功能，确保重命名操作安全可控。</p>
+                    <h3 data-lang="zh">安全可靠</h3>
+                    <h3 data-lang="en">Safe and Reliable</h3>
+                    <p data-lang="zh">支持预览和撤销功能，确保重命名操作安全可控。</p>
+                    <p data-lang="en">Preview and undo features ensure safe and controlled renaming operations.</p>
                 </div>
             </section>
         </main>
+
+        <script>
+            function toggleLanguage() {
+                const currentLang = document.documentElement.lang;
+                const newLang = currentLang === 'zh' ? 'en' : 'zh';
+                document.documentElement.lang = newLang;
+
+                // 更新所有带有 data-lang 属性的元素的显示状态
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    if (el.getAttribute('data-lang') === newLang) {
+                        el.style.display = '';
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+
+                // 保存语言偏好
+                localStorage.setItem('preferred-language', newLang);
+            }
+
+            // 页面加载时检查并应用保存的语言偏好
+            document.addEventListener('DOMContentLoaded', () => {
+                const savedLang = localStorage.getItem('preferred-language');
+                if (savedLang && savedLang !== document.documentElement.lang) {
+                    document.documentElement.lang = savedLang;
+                    document.querySelectorAll('[data-lang]').forEach(el => {
+                        if (el.getAttribute('data-lang') === savedLang) {
+                            el.style.display = '';
+                        } else {
+                            el.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>
