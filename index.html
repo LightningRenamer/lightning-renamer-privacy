@@ -120,8 +120,18 @@
                 margin-bottom: 1rem;
             }
 
-            [lang='en'] {
+            [data-lang='zh'] {
                 display: none;
+            }
+
+            html.lang-zh [data-lang='en'],
+            html.lang-en [data-lang='zh'] {
+                display: none;
+            }
+
+            html.lang-zh [data-lang='zh'],
+            html.lang-en [data-lang='en'] {
+                display: block;
             }
 
             @media (max-width: 768px) {
@@ -143,7 +153,7 @@
     <body>
         <header class="header">
             <nav class="nav">
-                <a href="#" class="logo">Power Renamer</a>
+                <a href="index.html" class="logo">Power Renamer</a>
                 <div class="nav-links">
                     <a href="privacy.html" data-lang="zh">隐私政策</a>
                     <a href="privacy.html" data-lang="en">Privacy Policy</a>
@@ -186,35 +196,40 @@
 
         <script>
             function toggleLanguage() {
-                const currentLang = document.documentElement.lang;
-                const newLang = currentLang === 'zh' ? 'en' : 'zh';
-                document.documentElement.lang = newLang;
+                const html = document.documentElement;
+                const newLang = html.classList.contains('lang-zh') ? 'en' : 'zh';
 
-                // 更新所有带有 data-lang 属性的元素的显示状态
-                document.querySelectorAll('[data-lang]').forEach(el => {
-                    if (el.getAttribute('data-lang') === newLang) {
-                        el.style.display = '';
-                    } else {
-                        el.style.display = 'none';
-                    }
-                });
+                // 移除旧的语言类
+                html.classList.remove('lang-zh', 'lang-en');
+                // 添加新的语言类
+                html.classList.add(`lang-${newLang}`);
+                html.setAttribute('lang', newLang);
 
                 // 保存语言偏好
-                localStorage.setItem('preferred-language', newLang);
+                try {
+                    localStorage.setItem('preferred-language', newLang);
+                } catch (e) {
+                    console.warn('Failed to save language preference:', e);
+                }
             }
 
             // 页面加载时检查并应用保存的语言偏好
             document.addEventListener('DOMContentLoaded', () => {
-                const savedLang = localStorage.getItem('preferred-language');
-                if (savedLang && savedLang !== document.documentElement.lang) {
-                    document.documentElement.lang = savedLang;
-                    document.querySelectorAll('[data-lang]').forEach(el => {
-                        if (el.getAttribute('data-lang') === savedLang) {
-                            el.style.display = '';
-                        } else {
-                            el.style.display = 'none';
-                        }
-                    });
+                const html = document.documentElement;
+                try {
+                    const savedLang = localStorage.getItem('preferred-language');
+                    const validLang = savedLang === 'en' || savedLang === 'zh' ? savedLang : 'zh';
+
+                    // 移除旧的语言类
+                    html.classList.remove('lang-zh', 'lang-en');
+                    // 添加新的语言类
+                    html.classList.add(`lang-${validLang}`);
+                    html.setAttribute('lang', validLang);
+                } catch (e) {
+                    console.error('Error loading language preference:', e);
+                    // 出错时使用默认中文
+                    html.classList.add('lang-zh');
+                    html.setAttribute('lang', 'zh');
                 }
             });
         </script>
