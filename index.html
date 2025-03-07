@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -180,6 +180,12 @@
                     <p data-lang="en">Supports various renaming rules, easily handles large numbers of files, saving your valuable time.</p>
                 </div>
                 <div class="feature-card">
+                    <h3 data-lang="zh">智能规则</h3>
+                    <h3 data-lang="en">Smart Rules</h3>
+                    <p data-lang="zh">内置多种智能规则模板，支持自定义规则，满足各种重命名需求。</p>
+                    <p data-lang="en">Built-in smart rule templates, supports custom rules to meet various renaming needs.</p>
+                </div>
+                <div class="feature-card">
                     <h3 data-lang="zh">安全可靠</h3>
                     <h3 data-lang="en">Safe and Reliable</h3>
                     <p data-lang="zh">支持预览和撤销功能，确保重命名操作安全可控。</p>
@@ -221,7 +227,7 @@
                     html.setAttribute('lang', validLang);
                 } catch (e) {
                     console.error('Error loading language preference:', e);
-                    // 出错时使用默认中文
+                    // 出错时使用默认英文
                     html.classList.add('lang-en');
                     html.setAttribute('lang', 'en');
                 }
