@@ -250,7 +250,7 @@
                 const html = document.documentElement;
                 try {
                     const savedLang = localStorage.getItem('preferred-language');
-                    const validLang = savedLang === 'en' || savedLang === 'zh' ? savedLang : 'zh';
+                    const validLang = savedLang === 'en' || savedLang === 'zh' ? savedLang : 'en';
 
                     // 移除旧的语言类
                     html.classList.remove('lang-zh', 'lang-en');
@@ -259,9 +259,9 @@
                     html.setAttribute('lang', validLang);
                 } catch (e) {
                     console.error('Error loading language preference:', e);
-                    // 出错时使用默认中文
-                    html.classList.add('lang-zh');
-                    html.setAttribute('lang', 'zh');
+                    // 出错时使用默认英文
+                    html.classList.add('lang-en');
+                    html.setAttribute('lang', 'en');
                 }
             });
         </script>
