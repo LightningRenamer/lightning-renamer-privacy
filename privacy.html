@@ -5,6 +5,32 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Privacy Policy - Power Renamer</title>
         <style>
+            :root {
+                --background-color: #f8f9fa;
+                --text-color: #333;
+                --header-background: #ffffff;
+                --card-background: #ffffff;
+                --shadow-color: rgba(0, 0, 0, 0.1);
+                --primary-color: #2196f3;
+                --primary-dark: #1976d2;
+                --secondary-color: #666;
+                --hover-color: #e0e0e0;
+                --button-background: #f0f0f0;
+            }
+
+            [data-theme="dark"] {
+                --background-color: #121212;
+                --text-color: #e0e0e0;
+                --header-background: #1e1e1e;
+                --card-background: #2d2d2d;
+                --shadow-color: rgba(0, 0, 0, 0.3);
+                --primary-color: #64b5f6;
+                --primary-dark: #42a5f5;
+                --secondary-color: #aaaaaa;
+                --hover-color: #3d3d3d;
+                --button-background: #3d3d3d;
+            }
+
             * {
                 margin: 0;
                 padding: 0;
@@ -14,18 +40,20 @@
             body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
                 line-height: 1.6;
-                color: #333;
-                background-color: #f8f9fa;
+                color: var(--text-color);
+                background-color: var(--background-color);
+                transition: background-color 0.3s ease, color 0.3s ease;
             }
 
             .header {
-                background-color: #ffffff;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                background-color: var(--header-background);
+                box-shadow: 0 2px 4px var(--shadow-color);
                 padding: 1rem;
                 position: fixed;
                 width: 100%;
                 top: 0;
                 z-index: 1000;
+                transition: background-color 0.3s ease;
             }
 
             .nav {
@@ -39,8 +67,9 @@
             .logo {
                 font-size: 1.5rem;
                 font-weight: bold;
-                color: #2196f3;
+                color: var(--primary-color);
                 text-decoration: none;
+                transition: color 0.3s ease;
             }
 
             .nav-links {
@@ -50,54 +79,75 @@
             }
 
             .nav-links a {
-                color: #666;
+                color: var(--secondary-color);
                 text-decoration: none;
                 transition: color 0.3s ease;
             }
 
             .nav-links a:hover {
-                color: #2196f3;
+                color: var(--primary-color);
             }
 
-            .language-switch {
-                background: #f0f0f0;
+            .button {
+                background: var(--button-background);
                 border: none;
                 padding: 0.5rem 1rem;
                 border-radius: 4px;
                 cursor: pointer;
                 transition: background-color 0.3s ease;
+                color: var(--text-color);
+                margin-left: 1rem;
             }
 
-            .language-switch:hover {
-                background: #e0e0e0;
+            .button:hover {
+                background: var(--hover-color);
+            }
+
+            .theme-switch {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 1rem;
+            }
+
+            .theme-icon {
+                font-size: 1.2rem;
+                margin-right: 0.3rem;
             }
 
             .main {
                 max-width: 800px;
                 margin: 6rem auto 2rem;
                 padding: 2rem;
-                background: white;
+                background: var(--card-background);
                 border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 2px 4px var(--shadow-color);
+                transition: background-color 0.3s ease;
             }
 
             h1 {
-                color: #1976d2;
+                color: var(--primary-dark);
                 margin-bottom: 2rem;
+                transition: color 0.3s ease;
             }
 
             h2 {
-                color: #2196f3;
+                color: var(--primary-color);
                 margin: 2rem 0 1rem;
+                transition: color 0.3s ease;
             }
 
             p {
                 margin-bottom: 1rem;
+                color: var(--text-color);
+                transition: color 0.3s ease;
             }
 
             ul {
                 margin-bottom: 1rem;
                 padding-left: 2rem;
+                color: var(--text-color);
+                transition: color 0.3s ease;
             }
 
             [data-lang='zh'] {
@@ -139,6 +189,10 @@
                 .main {
                     margin-top: 1rem;
                 }
+                
+                .button {
+                    margin: 0.5rem 0;
+                }
             }
         </style>
     </head>
@@ -151,7 +205,11 @@
                     <a href="privacy.html" data-lang="en">Privacy Policy</a>
                     <a href="terms.html" data-lang="zh">用户协议</a>
                     <a href="terms.html" data-lang="en">Terms of Service</a>
-                    <button class="language-switch" onclick="toggleLanguage()">EN/中文</button>
+                    <button class="button language-switch" onclick="toggleLanguage()">EN/中文</button>
+                    <button class="button theme-switch" onclick="toggleTheme()">
+                        <span class="theme-icon light-icon">☀</span>
+                        <span class="theme-icon dark-icon" style="display: none;">☾</span>
+                    </button>
                 </div>
             </nav>
         </header>
@@ -219,6 +277,7 @@
         </main>
 
         <script>
+            // 语言切换
             function toggleLanguage() {
                 const html = document.documentElement;
                 const newLang = html.classList.contains('lang-zh') ? 'en' : 'zh';
@@ -236,10 +295,44 @@
                     console.warn('Failed to save language preference:', e);
                 }
             }
+            
+            // 主题切换
+            function toggleTheme() {
+                const body = document.body;
+                const lightIcon = document.querySelector('.light-icon');
+                const darkIcon = document.querySelector('.dark-icon');
+                
+                // 切换主题
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                body.setAttribute('data-theme', newTheme);
+                
+                // 更新图标显示
+                if (newTheme === 'dark') {
+                    lightIcon.style.display = 'none';
+                    darkIcon.style.display = 'inline-block';
+                } else {
+                    lightIcon.style.display = 'inline-block';
+                    darkIcon.style.display = 'none';
+                }
+                
+                // 保存主题偏好
+                try {
+                    localStorage.setItem('preferred-theme', newTheme);
+                } catch (e) {
+                    console.warn('Failed to save theme preference:', e);
+                }
+            }
 
-            // 页面加载时检查并应用保存的语言偏好
+            // 页面加载时检查并应用保存的语言和主题偏好
             document.addEventListener('DOMContentLoaded', () => {
                 const html = document.documentElement;
+                const body = document.body;
+                const lightIcon = document.querySelector('.light-icon');
+                const darkIcon = document.querySelector('.dark-icon');
+                
+                // 应用保存的语言偏好
                 try {
                     const savedLang = localStorage.getItem('preferred-language');
                     const validLang = savedLang === 'en' || savedLang === 'zh' ? savedLang : 'en';
@@ -254,6 +347,26 @@
                     // 出错时使用默认英文
                     html.classList.add('lang-en');
                     html.setAttribute('lang', 'en');
+                }
+                
+                // 应用保存的主题偏好
+                try {
+                    const savedTheme = localStorage.getItem('preferred-theme');
+                    const validTheme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'light';
+                    
+                    if (validTheme === 'dark') {
+                        body.setAttribute('data-theme', 'dark');
+                        lightIcon.style.display = 'none';
+                        darkIcon.style.display = 'inline-block';
+                    } else {
+                        body.setAttribute('data-theme', 'light');
+                        lightIcon.style.display = 'inline-block';
+                        darkIcon.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.error('Error loading theme preference:', e);
+                    // 出错时使用默认亮色模式
+                    body.setAttribute('data-theme', 'light');
                 }
             });
         </script>
