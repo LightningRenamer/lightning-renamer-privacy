@@ -6,29 +6,37 @@
         <title>Terms of Service - Power Renamer</title>
         <style>
             :root {
-                --background-color: #f8f9fa;
-                --text-color: #333;
+                --background-color: #f9fafb;
+                --text-color: #374151;
                 --header-background: #ffffff;
                 --card-background: #ffffff;
-                --shadow-color: rgba(0, 0, 0, 0.1);
-                --primary-color: #2196f3;
-                --primary-dark: #1976d2;
-                --secondary-color: #666;
-                --hover-color: #e0e0e0;
-                --button-background: #f0f0f0;
+                --shadow-color: rgba(0, 0, 0, 0.06);
+                --primary-color: #3b82f6;
+                --primary-dark: #2563eb;
+                --secondary-color: #6b7280;
+                --hover-color: #f3f4f6;
+                --button-background: #f3f4f6;
+                --border-color: #e5e7eb;
+                --heading-color: #1f2937;
+                --footer-background: #f3f4f6;
+                --content-max-width: 800px;
+                --heading-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
             }
 
             [data-theme="dark"] {
-                --background-color: #121212;
-                --text-color: #e0e0e0;
-                --header-background: #1e1e1e;
-                --card-background: #2d2d2d;
+                --background-color: #111827;
+                --text-color: #e5e7eb;
+                --header-background: #1f2937;
+                --card-background: #1f2937;
                 --shadow-color: rgba(0, 0, 0, 0.3);
-                --primary-color: #64b5f6;
-                --primary-dark: #42a5f5;
-                --secondary-color: #aaaaaa;
-                --hover-color: #3d3d3d;
-                --button-background: #3d3d3d;
+                --primary-color: #60a5fa;
+                --primary-dark: #3b82f6;
+                --secondary-color: #9ca3af;
+                --hover-color: #374151;
+                --button-background: #374151;
+                --border-color: #4b5563;
+                --heading-color: #f9fafb;
+                --footer-background: #1f2937;
             }
 
             * {
@@ -38,26 +46,30 @@
             }
 
             body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                line-height: 1.6;
+                font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                line-height: 1.7;
                 color: var(--text-color);
                 background-color: var(--background-color);
-                transition: background-color 0.3s ease, color 0.3s ease;
+                transition: background-color 0.4s ease, color 0.4s ease;
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
 
             .header {
                 background-color: var(--header-background);
-                box-shadow: 0 2px 4px var(--shadow-color);
+                box-shadow: 0 2px 10px var(--shadow-color);
                 padding: 1rem;
                 position: fixed;
                 width: 100%;
                 top: 0;
                 z-index: 1000;
-                transition: background-color 0.3s ease;
+                transition: background-color 0.4s ease, box-shadow 0.4s ease;
+                border-bottom: 1px solid var(--border-color);
             }
 
             .nav {
-                max-width: 1200px;
+                max-width: var(--content-max-width);
                 margin: 0 auto;
                 display: flex;
                 justify-content: space-between;
@@ -66,10 +78,19 @@
 
             .logo {
                 font-size: 1.5rem;
-                font-weight: bold;
+                font-weight: 700;
                 color: var(--primary-color);
                 text-decoration: none;
                 transition: color 0.3s ease;
+                font-family: var(--heading-font);
+                letter-spacing: -0.025em;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .logo:hover {
+                color: var(--primary-dark);
             }
 
             .nav-links {
@@ -82,6 +103,8 @@
                 color: var(--secondary-color);
                 text-decoration: none;
                 transition: color 0.3s ease;
+                font-weight: 500;
+                font-size: 0.95rem;
             }
 
             .nav-links a:hover {
@@ -90,17 +113,20 @@
 
             .button {
                 background: var(--button-background);
-                border: none;
+                border: 1px solid var(--border-color);
                 padding: 0.5rem 1rem;
-                border-radius: 4px;
+                border-radius: 6px;
                 cursor: pointer;
-                transition: background-color 0.3s ease;
+                transition: all 0.3s ease;
                 color: var(--text-color);
                 margin-left: 1rem;
+                font-weight: 500;
+                font-size: 0.9rem;
             }
 
             .button:hover {
                 background: var(--hover-color);
+                transform: translateY(-1px);
             }
 
             .theme-switch {
@@ -108,46 +134,75 @@
                 align-items: center;
                 justify-content: center;
                 margin-left: 1rem;
+                width: 36px;
+                height: 36px;
+                padding: 0;
             }
 
             .theme-icon {
                 font-size: 1.2rem;
-                margin-right: 0.3rem;
+                line-height: 1;
             }
 
             .main {
-                max-width: 800px;
-                margin: 6rem auto 2rem;
-                padding: 2rem;
+                max-width: var(--content-max-width);
+                margin: 6rem auto 4rem;
+                padding: 2.5rem;
                 background: var(--card-background);
-                border-radius: 8px;
-                box-shadow: 0 2px 4px var(--shadow-color);
-                transition: background-color 0.3s ease;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px var(--shadow-color);
+                transition: background-color 0.4s ease, box-shadow 0.4s ease;
+                border: 1px solid var(--border-color);
             }
 
             h1 {
-                color: var(--primary-dark);
+                color: var(--heading-color);
                 margin-bottom: 2rem;
-                transition: color 0.3s ease;
+                transition: color 0.4s ease;
+                font-family: var(--heading-font);
+                font-weight: 800;
+                font-size: 2.2rem;
+                letter-spacing: -0.025em;
+                line-height: 1.2;
             }
 
             h2 {
-                color: var(--primary-color);
-                margin: 2rem 0 1rem;
-                transition: color 0.3s ease;
+                color: var(--heading-color);
+                margin: 2.5rem 0 1rem;
+                transition: color 0.4s ease;
+                font-family: var(--heading-font);
+                font-weight: 700;
+                font-size: 1.5rem;
+                letter-spacing: -0.015em;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid var(--border-color);
             }
 
             p {
-                margin-bottom: 1rem;
+                margin-bottom: 1.2rem;
                 color: var(--text-color);
-                transition: color 0.3s ease;
+                transition: color 0.4s ease;
             }
 
             ul {
-                margin-bottom: 1rem;
-                padding-left: 2rem;
+                margin-bottom: 1.5rem;
+                padding-left: 1.5rem;
                 color: var(--text-color);
-                transition: color 0.3s ease;
+                transition: color 0.4s ease;
+            }
+
+            li {
+                margin-bottom: 0.5rem;
+                position: relative;
+            }
+
+            li::before {
+                content: "•";
+                color: var(--primary-color);
+                font-weight: bold;
+                display: inline-block;
+                width: 1em;
+                margin-left: -1em;
             }
 
             [data-lang='zh'] {
@@ -164,30 +219,45 @@
                 display: block;
             }
 
+            .footer {
+                text-align: center;
+                padding: 2rem 1rem;
+                background-color: var(--footer-background);
+                color: var(--secondary-color);
+                font-size: 0.875rem;
+                border-top: 1px solid var(--border-color);
+                margin-top: 2rem;
+            }
+
             @media (max-width: 768px) {
                 .main {
                     margin: 4rem 1rem 2rem;
-                    padding: 1rem;
+                    padding: 1.5rem;
+                    border-radius: 8px;
                 }
                 
                 .header {
-                    position: relative;
-                    padding: 0.5rem;
+                    padding: 0.75rem 1rem;
                 }
                 
                 .nav {
                     flex-direction: column;
-                    align-items: flex-start;
+                    align-items: center;
                 }
                 
                 .nav-links {
-                    margin-top: 0.5rem;
+                    margin-top: 1rem;
                     flex-wrap: wrap;
-                    gap: 1rem;
+                    justify-content: center;
+                    gap: 1rem 2rem;
                 }
                 
-                .main {
-                    margin-top: 1rem;
+                h1 {
+                    font-size: 1.8rem;
+                }
+                
+                h2 {
+                    font-size: 1.3rem;
                 }
                 
                 .button {
@@ -199,7 +269,9 @@
     <body>
         <header class="header">
             <nav class="nav">
-                <a href="index.html" class="logo">Power Renamer</a>
+                <a href="index.html" class="logo">
+                    <span>Power Renamer</span>
+                </a>
                 <div class="nav-links">
                     <a href="privacy.html" data-lang="zh">隐私政策</a>
                     <a href="privacy.html" data-lang="en">Privacy Policy</a>
@@ -303,6 +375,11 @@
             <p data-lang="zh">如果您对本协议有任何疑问，请通过应用程序的"关于"页面联系我们。</p>
             <p data-lang="en">If you have any questions about these terms, please contact us through the "About" page in the application.</p>
         </main>
+
+        <footer class="footer">
+            <p data-lang="zh">© 2024 Power Renamer. 保留所有权利。</p>
+            <p data-lang="en">© 2024 Power Renamer. All rights reserved.</p>
+        </footer>
 
         <script>
             // 语言切换
