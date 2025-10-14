@@ -761,14 +761,17 @@
             // 主题切换
             function toggleTheme() {
                 const body = document.body;
+                const html = document.documentElement;
                 const lightIcon = document.querySelector('.light-icon');
                 const darkIcon = document.querySelector('.dark-icon');
                 
-                // 切换主题
-                const currentTheme = body.getAttribute('data-theme');
+                // 切换主题 - 检查body或html的主题设置
+                const currentTheme = body.getAttribute('data-theme') || html.getAttribute('data-theme') || 'light';
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
+                // 同时设置body和html的主题
                 body.setAttribute('data-theme', newTheme);
+                html.setAttribute('data-theme', newTheme);
                 
                 // 更新图标显示
                 if (newTheme === 'dark') {
@@ -818,10 +821,12 @@
                     
                     if (validTheme === 'dark') {
                         body.setAttribute('data-theme', 'dark');
+                        html.setAttribute('data-theme', 'dark');
                         lightIcon.style.display = 'none';
                         darkIcon.style.display = 'block';
                     } else {
                         body.setAttribute('data-theme', 'light');
+                        html.setAttribute('data-theme', 'light');
                         lightIcon.style.display = 'block';
                         darkIcon.style.display = 'none';
                     }
@@ -829,6 +834,7 @@
                     console.error('Error loading theme preference:', e);
                     // 出错时使用默认亮色模式
                     body.setAttribute('data-theme', 'light');
+                    html.setAttribute('data-theme', 'light');
                 }
             });
         </script>
