@@ -1,0 +1,8 @@
+# 敏感文件和文件夹
+.specstory/
+*.log
+.DS_Store
+
+# 临时文件
+*.tmp
+*.bak
