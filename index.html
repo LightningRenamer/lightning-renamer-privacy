@@ -235,8 +235,14 @@
             }
 
             .theme-icon {
-                font-size: 1.2rem;
-                line-height: 1;
+                width: 20px;
+                height: 20px;
+                transition: all 0.3s ease;
+                flex-shrink: 0;
+            }
+
+            .theme-icon:hover {
+                transform: scale(1.1) rotate(15deg);
             }
 
             .main {
@@ -650,8 +656,12 @@
                     <a href="terms.html" data-lang="en">Terms of Service</a>
                     <button class="button language-switch" onclick="toggleLanguage()">EN/中文</button>
                     <button class="button theme-switch" onclick="toggleTheme()">
-                        <span class="theme-icon light-icon">☀</span>
-                        <span class="theme-icon dark-icon" style="display: none;">☾</span>
+                        <svg class="theme-icon light-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+                        </svg>
+                        <svg class="theme-icon dark-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/>
+                        </svg>
                     </button>
                 </div>
             </nav>
@@ -664,12 +674,15 @@
                 <p data-lang="zh">简单高效的批量文件重命名解决方案，让文件管理变得轻松自如</p>
                 <p data-lang="en">A simple and efficient batch file renaming solution that makes file management effortless</p>
                 
+                <!-- 暂时隐藏行动号召按钮 -->
+                <!-- 
                 <div class="cta-buttons">
                     <button class="cta-button primary" data-lang="zh">立即体验</button>
                     <button class="cta-button primary" data-lang="en">Get Started</button>
                     <button class="cta-button secondary" data-lang="zh">了解更多</button>
                     <button class="cta-button secondary" data-lang="en">Learn More</button>
                 </div>
+                -->
             </section>
 
             <section class="features">
@@ -734,9 +747,9 @@
                 // 更新图标显示
                 if (newTheme === 'dark') {
                     lightIcon.style.display = 'none';
-                    darkIcon.style.display = 'inline-block';
+                    darkIcon.style.display = 'block';
                 } else {
-                    lightIcon.style.display = 'inline-block';
+                    lightIcon.style.display = 'block';
                     darkIcon.style.display = 'none';
                 }
                 
@@ -780,10 +793,10 @@
                     if (validTheme === 'dark') {
                         body.setAttribute('data-theme', 'dark');
                         lightIcon.style.display = 'none';
-                        darkIcon.style.display = 'inline-block';
+                        darkIcon.style.display = 'block';
                     } else {
                         body.setAttribute('data-theme', 'light');
-                        lightIcon.style.display = 'inline-block';
+                        lightIcon.style.display = 'block';
                         darkIcon.style.display = 'none';
                     }
                 } catch (e) {
