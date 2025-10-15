@@ -132,7 +132,7 @@
             }
 
             .nav {
-                max-width: var(--content-max-width);
+                max-width: 1200px;
                 margin: 0 auto;
                 display: flex;
                 justify-content: space-between;
@@ -280,11 +280,92 @@
             }
 
             .hero {
-                text-align: center;
                 padding: 6rem 0 4rem;
-                max-width: 900px;
-                margin: 0 auto;
                 animation: fadeInUp 1s ease-out;
+            }
+
+            .hero-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .hero-image {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                order: 1;
+            }
+
+            .hero-image img {
+                width: 100%;
+                height: auto;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                transition: transform 0.4s ease, box-shadow 0.4s ease;
+                cursor: pointer;
+            }
+
+            .hero-image img:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            }
+
+            .hero-text {
+                order: 2;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+                font-weight: 800;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+            }
+
+            .hero-text .tagline {
+                font-size: 1.25rem;
+                color: var(--primary-color);
+                font-weight: 600;
+                margin-bottom: 1.5rem;
+                line-height: 1.6;
+            }
+
+            .hero-text .description {
+                font-size: 1.05rem;
+                line-height: 1.8;
+                color: var(--text-color);
+                margin-bottom: 2rem;
+            }
+
+            @media (max-width: 968px) {
+                .hero-content {
+                    grid-template-columns: 1fr;
+                    gap: 3rem;
+                }
+
+                .hero-image {
+                    order: 2;
+                }
+
+                .hero-text {
+                    order: 1;
+                    text-align: center;
+                }
+
+                .hero-text h1 {
+                    font-size: 2rem;
+                }
+
+                .hero-text .tagline {
+                    font-size: 1.1rem;
+                }
+
+                .hero-text .description {
+                    font-size: 1rem;
+                }
             }
 
             @keyframes fadeInUp {
@@ -296,47 +377,6 @@
                     opacity: 1;
                     transform: translateY(0);
                 }
-            }
-
-            .hero h1 {
-                font-size: 3.5rem;
-                margin-bottom: 1.5rem;
-                color: var(--heading-color);
-                transition: color 0.3s ease;
-                font-family: var(--heading-font);
-                font-weight: 800;
-                letter-spacing: -0.03em;
-                line-height: 1.1;
-                background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                position: relative;
-                display: inline-block;
-            }
-
-            .hero h1::after {
-                content: '';
-                position: absolute;
-                bottom: -10px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100px;
-                height: 4px;
-                background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-                border-radius: 2px;
-                opacity: 0.6;
-            }
-
-            .hero p {
-                font-size: 1.3rem;
-                color: var(--secondary-color);
-                max-width: 700px;
-                margin: 2rem auto 3rem;
-                transition: color 0.3s ease;
-                font-weight: 400;
-                letter-spacing: -0.01em;
-                line-height: 1.6;
             }
 
             .cta-buttons {
@@ -420,6 +460,878 @@
             .cta-button span {
                 position: relative;
                 z-index: 1;
+            }
+
+            /* 集成式规则展示 - 轮播图模式 */
+            .rules-integrated {
+                padding: 6rem 2rem;
+            }
+
+            /* 轮播图容器 */
+            .carousel-wrapper {
+                position: relative;
+                max-width: 1200px;
+                margin: 0 auto 3rem;
+                display: flex;
+                align-items: center;
+                gap: 2rem;
+                height: 600px;
+            }
+
+            /* 轮播图主容器 - 3D透视 */
+            .carousel-container {
+                flex: 1;
+                position: relative;
+                height: 600px;
+                perspective: 2000px;
+                transform-style: preserve-3d;
+                overflow: visible;
+            }
+
+            /* 轮播轨道 - 3D空间 */
+            .carousel-track {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                transform-style: preserve-3d;
+            }
+
+            /* 轮播幻灯片 - 3D卡片 */
+            .carousel-slide {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: auto;
+                height: auto;
+                transform: translate(-50%, -50%);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: transparent;
+                border-radius: 20px;
+                transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+                transform-style: preserve-3d;
+                backface-visibility: visible;
+            }
+
+            .carousel-slide img {
+                display: block;
+                width: auto;
+                height: auto;
+                max-width: none;
+                max-height: none;
+                border-radius: 12px;
+                transition: all 0.4s ease;
+            }
+
+            /* 中心卡片 */
+            .carousel-slide.active {
+                z-index: 10;
+                opacity: 1;
+                transform: translate(-50%, -50%) translateZ(0) rotateY(0deg) scale(1);
+            }
+
+            /* 左侧卡片 */
+            .carousel-slide.prev {
+                z-index: 5;
+                opacity: 0.5;
+                transform: translate(-120%, -50%) translateZ(-300px) rotateY(35deg) scale(0.75);
+                filter: brightness(0.7);
+            }
+
+            /* 右侧卡片 */
+            .carousel-slide.next {
+                z-index: 5;
+                opacity: 0.5;
+                transform: translate(20%, -50%) translateZ(-300px) rotateY(-35deg) scale(0.75);
+                filter: brightness(0.7);
+            }
+
+            /* 隐藏的卡片 */
+            .carousel-slide.hidden {
+                z-index: 1;
+                opacity: 0;
+                transform: translate(-50%, -50%) translateZ(-500px) scale(0.5);
+                pointer-events: none;
+            }
+
+            /* 中心卡片悬停效果 */
+            .carousel-slide.active:hover {
+                transform: translate(-50%, -50%) translateZ(20px) rotateY(0deg) scale(1.02);
+            }
+
+            .carousel-slide.active:hover img {
+                transform: scale(1.02);
+            }
+
+            /* 箭头按钮 */
+            .carousel-arrow {
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                border: none;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(20px);
+                color: var(--text-color);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                flex-shrink: 0;
+                position: relative;
+                z-index: 100;
+            }
+
+            [data-theme="dark"] .carousel-arrow {
+                background: rgba(30, 41, 59, 0.8);
+            }
+
+            .carousel-arrow:hover {
+                background: rgba(255, 255, 255, 0.2);
+                box-shadow: 0 8px 30px rgba(99, 102, 241, 0.3);
+                transform: scale(1.1);
+            }
+
+            [data-theme="dark"] .carousel-arrow:hover {
+                background: rgba(30, 41, 59, 1);
+            }
+
+            .carousel-arrow:active {
+                transform: scale(0.95);
+            }
+
+            .carousel-arrow svg {
+                width: 24px;
+                height: 24px;
+                stroke: currentColor;
+            }
+
+            /* 指示器 */
+            .carousel-indicators {
+                display: none;
+            }
+
+            .indicator-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--border-color);
+                border: none;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                padding: 0;
+            }
+
+            .indicator-dot:hover {
+                background: var(--primary-color);
+                transform: scale(1.2);
+            }
+
+            .indicator-dot.active {
+                background: var(--primary-color);
+                width: 24px;
+                border-radius: 4px;
+            }
+
+            .rules-section-title {
+                text-align: center;
+                margin-bottom: 4rem;
+            }
+
+            .rules-section-title h2 {
+                font-size: 2.5rem;
+                font-weight: 800;
+                color: var(--heading-color);
+                font-family: var(--heading-font);
+                letter-spacing: -0.02em;
+                margin-bottom: 1rem;
+                background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .rules-section-title p {
+                font-size: 1.15rem;
+                color: var(--secondary-color);
+                max-width: 800px;
+                margin: 0 auto;
+                line-height: 1.7;
+            }
+
+
+            /* 独立的文字描述区 */
+            .rules-text-area {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 3rem;
+                background: var(--card-background);
+                border-radius: 16px;
+                box-shadow: 0 8px 32px var(--shadow-color);
+                border: 1px solid var(--border-color);
+            }
+
+            .rules-text-area .rule-details {
+                animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .rule-details {
+                width: 100%;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .rule-details.content-fade-out {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            .rule-details.content-fade-in {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .detail-header h2 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                color: var(--heading-color);
+                margin: 0;
+                font-family: var(--heading-font);
+                letter-spacing: -0.04em;
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .rule-details p {
+                font-size: 1.0625rem;
+                line-height: 1.8;
+                color: var(--text-color);
+                margin: 0;
+                opacity: 0.9;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+
+            .detail-header {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .detail-number {
+                display: none;
+            }
+
+            /* 内容切换动画 */
+            .content-fade-transition {
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .content-fade-out {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            .content-fade-in {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* 作用域功能介绍 */
+            .scope-feature {
+                padding: 6rem 2rem;
+                background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
+            }
+
+            .scope-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .scope-image {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                order: 1;
+            }
+
+            .scope-image img {
+                width: 100%;
+                height: auto;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                transition: transform 0.4s ease, box-shadow 0.4s ease;
+            }
+
+            .scope-image img {
+                cursor: pointer;
+            }
+
+            .scope-image img:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            }
+
+            /* 图片放大查看 Modal */
+            .image-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                z-index: 9999;
+                cursor: zoom-out;
+                animation: fadeIn 0.3s ease;
+            }
+
+            .image-modal.active {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+            }
+
+            .image-modal img {
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
+                border-radius: 8px;
+                box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+                animation: zoomIn 0.3s ease;
+            }
+
+            .image-modal-close {
+                position: absolute;
+                top: 2rem;
+                right: 2rem;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border: none;
+                color: white;
+                font-size: 24px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }
+
+            .image-modal-close:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: scale(1.1);
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            @keyframes zoomIn {
+                from { 
+                    opacity: 0;
+                    transform: scale(0.8);
+                }
+                to { 
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            .scope-text {
+                order: 2;
+            }
+
+            .scope-text h2 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                color: var(--heading-color);
+                font-family: var(--heading-font);
+                letter-spacing: -0.02em;
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .scope-text p {
+                font-size: 1.05rem;
+                line-height: 1.8;
+                color: var(--text-color);
+                margin-bottom: 1.5rem;
+                opacity: 0.9;
+            }
+
+            .scope-text p:last-child {
+                margin-bottom: 0;
+            }
+
+            /* 智能筛选功能介绍 */
+            .filter-feature {
+                padding: 6rem 2rem;
+                background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
+            }
+
+            .filter-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* 左侧图片容器（带箭头） */
+            .filter-image-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                order: 2;
+            }
+
+            .filter-image {
+                flex: 1;
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .filter-image .preview-item {
+                grid-column: 1;
+                grid-row: 1;
+                width: 100%;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                pointer-events: none;
+            }
+
+            .filter-image .preview-item.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .filter-image img {
+                width: 100%;
+                height: auto;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                transition: transform 0.4s ease, box-shadow 0.4s ease;
+                cursor: zoom-in;
+            }
+
+            .filter-image img:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            }
+
+            /* 箭头按钮 */
+            .filter-arrow {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background: var(--card-background);
+                border: 2px solid var(--border-color);
+                color: var(--text-color);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .filter-arrow:hover {
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                border-color: transparent;
+                color: white;
+                transform: scale(1.1);
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            }
+
+            .filter-arrow:active {
+                transform: scale(0.95);
+            }
+
+            /* 右侧文字 */
+            .filter-text {
+                order: 1;
+            }
+
+            .filter-text h2 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                color: var(--heading-color);
+                font-family: var(--heading-font);
+                letter-spacing: -0.02em;
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .filter-text .intro {
+                font-size: 1.05rem;
+                line-height: 1.8;
+                color: var(--text-color);
+                margin-bottom: 2rem;
+                opacity: 0.9;
+            }
+
+            /* 文字描述 */
+            .filter-description {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            /* 布局切换功能介绍 */
+            .layout-feature {
+                padding: 6rem 2rem;
+                background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
+            }
+
+            .layout-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* 左侧图片容器（带箭头） */
+            .layout-image-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                order: 1;
+            }
+
+            .layout-image {
+                flex: 1;
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .layout-image .preview-item {
+                grid-column: 1;
+                grid-row: 1;
+                width: 100%;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                pointer-events: none;
+            }
+
+            .layout-image .preview-item.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .layout-image img {
+                width: 100%;
+                height: auto;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                transition: transform 0.4s ease, box-shadow 0.4s ease;
+                cursor: zoom-in;
+            }
+
+            .layout-image img:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            }
+
+            /* 箭头按钮 */
+            .layout-arrow {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background: var(--card-background);
+                border: 2px solid var(--border-color);
+                color: var(--text-color);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .layout-arrow:hover {
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                border-color: transparent;
+                color: white;
+                transform: scale(1.1);
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            }
+
+            .layout-arrow:active {
+                transform: scale(0.95);
+            }
+
+            /* 右侧文字 */
+            .layout-text {
+                order: 2;
+            }
+
+            .layout-text h2 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                color: var(--heading-color);
+                font-family: var(--heading-font);
+                letter-spacing: -0.02em;
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .layout-text .intro {
+                font-size: 1.05rem;
+                line-height: 1.8;
+                color: var(--text-color);
+                margin-bottom: 2rem;
+                opacity: 0.9;
+            }
+
+            /* 文字描述 */
+            .layout-description {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            /* 元数据面板介绍 */
+            .metadata-feature {
+                padding: 6rem 2rem;
+                background: linear-gradient(180deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
+            }
+
+            /* 主题切换功能介绍 */
+            .theme-feature {
+                padding: 6rem 2rem;
+                background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
+            }
+
+            .theme-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .theme-image {
+                order: 2;
+            }
+
+            .theme-image img {
+                width: 100%;
+                height: auto;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                transition: transform 0.4s ease, box-shadow 0.4s ease;
+                cursor: zoom-in;
+            }
+
+            .theme-image img:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            }
+
+            .theme-text {
+                order: 1;
+            }
+
+            .theme-text h2 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                color: var(--heading-color);
+                font-family: var(--heading-font);
+                letter-spacing: -0.02em;
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .theme-text p {
+                font-size: 1.05rem;
+                line-height: 1.8;
+                color: var(--text-color);
+                opacity: 0.9;
+            }
+
+            .metadata-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: center;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* 左侧图片容器（带箭头） */
+            .metadata-image-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                order: 1;
+            }
+
+            .metadata-image {
+                flex: 1;
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .metadata-image .preview-item {
+                grid-column: 1;
+                grid-row: 1;
+                width: 100%;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                pointer-events: none;
+            }
+
+            .metadata-image .preview-item.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .metadata-image img {
+                width: 100%;
+                height: auto;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                transition: transform 0.4s ease, box-shadow 0.4s ease;
+                cursor: zoom-in;
+            }
+
+            .metadata-image img:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            }
+
+            /* 箭头按钮 */
+            .metadata-arrow {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background: var(--card-background);
+                border: 2px solid var(--border-color);
+                color: var(--text-color);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .metadata-arrow:hover {
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                border-color: transparent;
+                color: white;
+                transform: scale(1.1);
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            }
+
+            .metadata-arrow:active {
+                transform: scale(0.95);
+            }
+
+            /* 右侧文字 */
+            .metadata-text {
+                order: 2;
+            }
+
+            .metadata-text h2 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                color: var(--heading-color);
+                font-family: var(--heading-font);
+                letter-spacing: -0.02em;
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .metadata-text .intro {
+                font-size: 1.05rem;
+                line-height: 1.8;
+                color: var(--text-color);
+                margin-bottom: 2rem;
+                opacity: 0.9;
+            }
+
+            /* 文字描述 */
+            .metadata-description {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .description-item h3 {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-bottom: 0.75rem;
+                color: var(--heading-color);
+            }
+
+            .file-type-icon {
+                flex-shrink: 0;
+                color: var(--primary-color);
+            }
+
+            .description-item p {
+                font-size: 1.05rem;
+                line-height: 1.8;
+                color: var(--text-color);
+                opacity: 0.9;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
             .features {
@@ -599,15 +1511,6 @@
             }
 
             @media (max-width: 768px) {
-                .hero h1 {
-                    font-size: 2.5rem;
-                    letter-spacing: -0.02em;
-                }
-
-                .hero p {
-                    font-size: 1.15rem;
-                    padding: 0 1rem;
-                }
                 
                 .main {
                     padding: 0 1.5rem;
@@ -666,6 +1569,251 @@
                 .header {
                     padding: 0.75rem;
                 }
+
+                /* 轮播图响应式 */
+                .rules-integrated {
+                    padding: 3rem 1rem;
+                }
+
+                .rules-section-title h2 {
+                    font-size: 1.75rem;
+                }
+
+                .rules-section-title p {
+                    font-size: 1rem;
+                    padding: 0 1rem;
+                }
+
+                .rules-section-title {
+                    margin-bottom: 3rem;
+                }
+
+                .carousel-wrapper {
+                    gap: 1rem;
+                    height: 450px;
+                }
+
+                .carousel-container {
+                    height: 450px;
+                }
+
+                .carousel-slide {
+                    width: 70%;
+                }
+
+                .carousel-slide.prev {
+                    transform: translate(-130%, -50%) translateZ(-200px) rotateY(30deg) scale(0.7);
+                }
+
+                .carousel-slide.next {
+                    transform: translate(30%, -50%) translateZ(-200px) rotateY(-30deg) scale(0.7);
+                }
+
+                .carousel-arrow {
+                    width: 48px;
+                    height: 48px;
+                }
+
+                .carousel-arrow svg {
+                    width: 20px;
+                    height: 20px;
+                }
+
+                .carousel-slide img {
+                    max-width: 95%;
+                    max-height: none;
+                }
+
+                .carousel-indicators {
+                    margin: 1.5rem 0 2rem;
+                }
+
+                .indicator-dot {
+                    width: 6px;
+                    height: 6px;
+                }
+
+                .indicator-dot.active {
+                    width: 20px;
+                }
+
+                .rules-text-area {
+                    padding: 2rem 1.5rem;
+                    max-width: 100%;
+                    margin: 0 1rem;
+                }
+
+                .detail-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 1rem;
+                }
+
+                .detail-header h2 {
+                    font-size: 1.75rem;
+                }
+
+                .detail-number {
+                    font-size: 0.9375rem;
+                    padding: 0.375rem 0.75rem;
+                }
+
+                .rule-details p {
+                    font-size: 0.9375rem;
+                    line-height: 1.7;
+                }
+
+                /* 作用域功能响应式 */
+                .scope-feature {
+                    padding: 3rem 1rem;
+                }
+
+                .scope-content {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+
+                .scope-image {
+                    order: 1;
+                }
+
+                .scope-text {
+                    order: 2;
+                    text-align: center;
+                }
+
+                .scope-text h2 {
+                    font-size: 1.75rem;
+                }
+
+                .scope-text p {
+                    font-size: 1rem;
+                }
+
+                /* 智能筛选功能响应式 */
+                .filter-feature {
+                    padding: 3rem 1rem;
+                }
+
+                .filter-content {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+
+                .filter-image-wrapper {
+                    order: 1;
+                }
+
+                .filter-text {
+                    order: 2;
+                }
+
+                .filter-text h2 {
+                    font-size: 1.75rem;
+                }
+
+                .filter-text .intro {
+                    font-size: 1rem;
+                }
+
+                .filter-description {
+                    gap: 1.5rem;
+                }
+
+                /* 布局切换功能响应式 */
+                .layout-feature {
+                    padding: 3rem 1rem;
+                }
+
+                .layout-content {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+
+                .layout-image-wrapper {
+                    order: 1;
+                }
+
+                .layout-text {
+                    order: 2;
+                }
+
+                .layout-text h2 {
+                    font-size: 1.75rem;
+                }
+
+                .layout-text .intro {
+                    font-size: 1rem;
+                }
+
+                .layout-description {
+                    gap: 1.5rem;
+                }
+
+                /* 元数据面板响应式 */
+                .metadata-feature {
+                    padding: 3rem 1rem;
+                }
+
+                .metadata-content {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+
+                .metadata-image-wrapper {
+                    order: 1;
+                }
+
+                .metadata-text {
+                    order: 2;
+                }
+
+                .metadata-text h2 {
+                    font-size: 1.75rem;
+                }
+
+                .metadata-text .intro {
+                    font-size: 1rem;
+                }
+
+                .metadata-description {
+                    gap: 1.5rem;
+                }
+
+                .description-item h3 {
+                    font-size: 1.25rem;
+                }
+
+                .description-item p {
+                    font-size: 1rem;
+                }
+
+                /* 主题切换功能响应式 */
+                .theme-feature {
+                    padding: 3rem 1rem;
+                }
+
+                .theme-content {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+
+                .theme-image {
+                    order: 1;
+                }
+
+                .theme-text {
+                    order: 2;
+                    text-align: center;
+                }
+
+                .theme-text h2 {
+                    font-size: 1.75rem;
+                }
+
+                .theme-text p {
+                    font-size: 1rem;
+                }
             }
         </style>
     </head>
@@ -695,148 +1843,539 @@
 
         <main class="main">
             <section class="hero">
-                <h1 data-lang="zh">智能文件重命名工具</h1>
-                <h1 data-lang="en">Smart File Renaming Tool</h1>
-                <p data-lang="zh">简单高效的批量文件重命名解决方案，让文件管理变得轻松自如</p>
-                <p data-lang="en">A simple and efficient batch file renaming solution that makes file management effortless</p>
-                
-                <!-- 暂时隐藏行动号召按钮 -->
-                <!-- 
-                <div class="cta-buttons">
-                    <button class="cta-button primary" data-lang="zh">立即体验</button>
-                    <button class="cta-button primary" data-lang="en">Get Started</button>
-                    <button class="cta-button secondary" data-lang="zh">了解更多</button>
-                    <button class="cta-button secondary" data-lang="en">Learn More</button>
+                <div class="hero-content">
+                    <!-- 左侧软件截图 -->
+                    <div class="hero-image">
+                        <img src="pics/mainview.png" alt="Lightning Renamer Interface" loading="lazy" onclick="openImageModal(this.src)">
+                    </div>
+
+                    <!-- 右侧应用描述 -->
+                    <div class="hero-text">
+                        <h1 data-lang="zh">Lightning Renamer</h1>
+                        <h1 data-lang="en">Lightning Renamer</h1>
+                        
+                        <p class="tagline" data-lang="zh">告别繁琐，一键掌控！Lightning Renamer 是您管理海量文件的高效解决方案，以其高度的灵活性和强大的功能，让文件重命名变得简单、智能、高效。</p>
+                        <p class="tagline" data-lang="en">Simplify file management with one powerful tool! Lightning Renamer offers an efficient solution for organizing your files with flexibility, intelligence, and speed.</p>
+                        
+                        <p class="description" data-lang="zh">Lightning Renamer 是一款专为 Mac 用户打造的专业级批量重命名工具。无论您是摄影师、设计师还是普通用户，面对成百上千的文件，它都能轻松应对。内置13种功能各异的重命名规则，支持无限组合、拖拽排序、文件名称实时预览，更有丰富的元数据支持和创新的"规则作用域"功能，将复杂的文件整理工作化繁为简。</p>
+                        <p class="description" data-lang="en">Lightning Renamer is a professional batch renaming tool designed specifically for Mac users. Whether you're a photographer, designer, or everyday user dealing with hundreds of files, this app handles it all with ease. With 13 versatile renaming rules, unlimited combinations, drag-and-drop reordering, and real-time previews, plus extensive metadata support and the innovative "rule scope" feature, Lightning Renamer transforms complex file organization into a simple task.</p>
+                    </div>
                 </div>
-                -->
             </section>
 
-            <section class="features">
-                <div class="feature-card">
-                    <h3 data-lang="zh">批量重命名</h3>
-                    <h3 data-lang="en">Batch Rename</h3>
-                    <p data-lang="zh">支持多种重命名规则，轻松处理大量文件，节省您的宝贵时间。</p>
-                    <p data-lang="en">Supports various renaming rules, easily handles large numbers of files, saving your valuable time.</p>
+            <!-- 集成式规则展示 -->
+            <section class="rules-integrated">
+                <div class="rules-section-title">
+                    <h2 data-lang="zh">13种专业重命名规则</h2>
+                    <h2 data-lang="en">13 Professional Renaming Rules</h2>
+                    <p data-lang="zh">从简单的文本替换到复杂的正则表达式，满足您的一切需求。</p>
+                    <p data-lang="en">From simple text replacement to complex regular expressions, satisfying all your renaming needs.</p>
                 </div>
-                <div class="feature-card">
-                    <h3 data-lang="zh">智能规则</h3>
-                    <h3 data-lang="en">Smart Rules</h3>
-                    <p data-lang="zh">内置多种智能规则模板，支持自定义规则，满足各种重命名需求。</p>
-                    <p data-lang="en">Built-in smart rule templates, supports custom rules to meet various renaming needs.</p>
+
+                <!-- 轮播图容器 -->
+                <div class="carousel-wrapper">
+                    <!-- 左箭头 -->
+                    <button class="carousel-arrow carousel-prev" aria-label="Previous">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+
+                    <!-- 图片轮播区 -->
+                    <div class="carousel-container">
+                        <div class="carousel-track">
+                            <div class="carousel-slide" data-rule="replace">
+                                <img src="pics/rules/replace.png" alt="Replace Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="insert">
+                                <img src="pics/rules/insert.png" alt="Insert Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="remove">
+                                <img src="pics/rules/remove.png" alt="Remove Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="serialize">
+                                <img src="pics/rules/serialize.png" alt="Serialize Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="clean">
+                                <img src="pics/rules/clean.png" alt="Clean Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="strip">
+                                <img src="pics/rules/strip.png" alt="Strip Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="case">
+                                <img src="pics/rules/case.png" alt="Case Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="extension">
+                                <img src="pics/rules/extension.png" alt="Extension Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="padding">
+                                <img src="pics/rules/padding.png" alt="Padding Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="delete">
+                                <img src="pics/rules/delete.png" alt="Delete Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="regular">
+                                <img src="pics/rules/regular.png" alt="Regular Expression Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="userinput">
+                                <img src="pics/rules/userinput.png" alt="User Input Rule" loading="lazy">
+                            </div>
+                            <div class="carousel-slide" data-rule="randomize">
+                                <img src="pics/rules/randomize.png" alt="Randomize Rule" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右箭头 -->
+                    <button class="carousel-arrow carousel-next" aria-label="Next">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
                 </div>
-                <div class="feature-card">
-                    <h3 data-lang="zh">安全可靠</h3>
-                    <h3 data-lang="en">Safe and Reliable</h3>
-                    <p data-lang="zh">支持预览和撤销功能，确保重命名操作安全可控。</p>
-                    <p data-lang="en">Preview and undo features ensure safe and controlled renaming operations.</p>
+
+                <!-- 轮播指示器 -->
+                <div class="carousel-indicators"></div>
+
+                <!-- 独立的文字描述区 -->
+                <div class="rules-text-area">
+                    <div class="rule-details">
+                        <div class="detail-header">
+                            <h2 id="rule-title-zh" data-lang="zh">替换</h2>
+                            <h2 id="rule-title-en" data-lang="en">Replace</h2>
+                            <span class="detail-number">01/13</span>
+                        </div>
+                        <p id="rule-desc-zh" data-lang="zh">支持精确替换和模糊替换两种模式。精确替换要求完全匹配才进行替换；模糊替换则不区分大小写，能灵活匹配不同书写形式。可选择替换首个匹配项或全部匹配项，还支持反向功能，将替换内容变回原始内容。提供大小写匹配选项，确保替换结果的大小写与原始文本保持一致。</p>
+                        <p id="rule-desc-en" data-lang="en">Supports both exact and fuzzy replacement modes. Exact replacement requires complete matching; fuzzy replacement is case-insensitive and can flexibly match different writing forms. You can choose to replace the first match or all matches, and it supports reverse functionality to change replacement content back to original. Provides case matching options to ensure the case of replacement results is consistent with the original text.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 作用域功能介绍 -->
+            <section class="scope-feature">
+                <div class="scope-content">
+                    <!-- 左侧截图 -->
+                    <div class="scope-image">
+                        <img src="pics/rules/scope.png" alt="Rule Scope Feature" loading="lazy" onclick="openImageModal(this.src)">
+                    </div>
+
+                    <!-- 右侧文字描述 -->
+                    <div class="scope-text">
+                        <h2 data-lang="zh">手术刀般精准的"规则作用域"功能</h2>
+                        <h2 data-lang="en">Surgical Precision with "Rule Scope"</h2>
+                        
+                        <p data-lang="zh">如同外科手术刀般精准，规则作用域让您能够将每条规则精确定位到指定文件，在复杂场景下实现极致的重命名控制。当您面对一个混杂着图片、视频和文档的文件夹时，您可以创建一条规则专门作用于所有.jpg文件，另一条规则只作用于文件名包含"报告"的文档，而第三条规则则应用到其余所有文件上。</p>
+                        <p data-lang="en">Like a surgeon's scalpel, Rule Scope enables you to precisely target each rule to specific files, achieving ultimate renaming control in complex scenarios. When facing a folder with a mix of images, videos, and documents, you can create one rule specifically for all .jpg files, another rule only for files with "report" in their names, and a third rule for all remaining files.</p>
+                        
+                        <p data-lang="zh">作用域功能与文件筛选功能完美结合，允许您先用筛选器快速定位特定文件群组（如某个时间段创建的文件、特定大小范围的文件或特定扩展名的文件），然后为这些筛选后的文件单独设置规则，实现多层次、多条件的精准文件处理。这种手术刀般的精细控制力，让您在最复杂的场景下也能游刃有余。</p>
+                        <p data-lang="en">The scope feature works perfectly with the file filtering function, allowing you to first use filters to quickly locate specific file groups (such as files created within a specific timeframe, files of a certain size range, or files with specific extensions), and then set separate rules for these filtered files, achieving multi-level, multi-condition precise file processing. This surgical precision control lets you handle even the most complex scenarios with ease.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 智能筛选功能介绍 -->
+            <section class="filter-feature">
+                <div class="filter-content">
+                    <!-- 左侧图片预览（带箭头） -->
+                    <div class="filter-image-wrapper">
+                        <!-- 左箭头 -->
+                        <button class="filter-arrow filter-prev" aria-label="Previous">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+
+                        <div class="filter-image">
+                            <div class="preview-item active" data-index="0">
+                                <img src="pics/filter/filter.png" alt="Basic Filter" loading="lazy" onclick="openImageModal(this.src)">
+                            </div>
+                            <div class="preview-item" data-index="1">
+                                <img src="pics/filter/advancedfilter.png" alt="Advanced Filter" loading="lazy" onclick="openImageModal(this.src)">
+                            </div>
+                        </div>
+
+                        <!-- 右箭头 -->
+                        <button class="filter-arrow filter-next" aria-label="Next">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- 右侧文字内容 -->
+                    <div class="filter-text">
+                        <h2 data-lang="zh">智能筛选系统</h2>
+                        <h2 data-lang="en">Intelligent Filtering System</h2>
+                        
+                        <p class="intro" data-lang="zh">多维度精确定位，海量文件从容管理。支持9大筛选类型的自由组合，通过与/或逻辑关系和分组功能构建复杂筛选条件，配合快速文本搜索和预设筛选方案，无论文件数量多少，都能快速找到目标文件。</p>
+                        <p class="intro" data-lang="en">Multi-dimensional precision targeting for effortless management of massive file collections. Supports flexible combination of 9 major filter types through AND/OR logic relationships and grouping functions. Combined with quick text search and preset filter schemes, quickly locate target files regardless of quantity.</p>
+
+                        <!-- 文字描述 -->
+                        <div class="filter-description">
+                            <div class="description-item">
+                                <h3 data-lang="zh">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M3 6h18M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    基础筛选
+                                </h3>
+                                <h3 data-lang="en">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M3 6h18M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Basic Filtering
+                                </h3>
+                                <p data-lang="zh">提供9大核心筛选维度：文件名、新文件名、文件状态、文件类型、文件大小、修改日期、创建日期、参与状态和名称长度。每个维度都提供专门的比较运算符和匹配选项，如文本包含匹配、日期的范围选择、大小的区间设定等。内置快速文本搜索框，实时过滤文件列表；预设条件筛选提供常用筛选方案一键应用，大幅提升工作效率。</p>
+                                <p data-lang="en">Offers 9 core filtering dimensions: File Name, New File Name, File Status, Kind, File Size, Modification Date, Creation Date, Participation Status, and Name Length. Each dimension provides specialized comparison operators and matching options, such as text contains matching, date range selection, and size interval settings. Built-in quick text search box for real-time file list filtering; preset condition filters provide one-click application of common filter schemes, significantly boosting work efficiency.</p>
+                            </div>
+                            <div class="description-item">
+                                <h3 data-lang="zh">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M10 7v3m0 3h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    高级筛选
+                                </h3>
+                                <h3 data-lang="en">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M10 7v3m0 3h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Advanced Filtering
+                                </h3>
+                                <p data-lang="zh">突破单一条件限制，构建专业级复杂筛选逻辑。支持多层级的条件分组，每个分组可独立设置与（AND）或或（OR）逻辑关系；分组内可嵌套子分组，实现诸如"（文件大小大于10MB 且 格式为JPG）或（创建于最近7天 且 名称包含'项目'）"这样的多维度组合条件。提供可视化的条件树状结构，清晰展示筛选逻辑；支持对已保存的高级筛选条件进行再编辑和优化，让复杂场景下的文件定位变得简单直观。</p>
+                                <p data-lang="en">Break through single-condition limitations to build professional-grade complex filtering logic. Supports multi-level hierarchical condition grouping, with each group independently configurable for AND or OR logic relationships; groups can contain nested subgroups, enabling multi-dimensional combinations like "(file size > 10MB AND format is JPG) OR (created within last 7 days AND name contains 'project')". Provides a visual tree structure for conditions, clearly displaying filter logic; supports re-editing and optimization of saved advanced filter conditions, making file targeting in complex scenarios simple and intuitive.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 元数据面板介绍 -->
+            <section class="metadata-feature">
+                <div class="metadata-content">
+                    <!-- 左侧图片预览（带箭头） -->
+                    <div class="metadata-image-wrapper">
+                        <!-- 左箭头 -->
+                        <button class="metadata-arrow metadata-prev" aria-label="Previous">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+
+                        <div class="metadata-image">
+                            <div class="preview-item active" data-index="0">
+                                <img src="pics/metadata/metadata_audio.png" alt="Audio Metadata" loading="lazy" onclick="openImageModal(this.src)">
+                            </div>
+                            <div class="preview-item" data-index="1">
+                                <img src="pics/metadata/metadata_video.png" alt="Video Metadata" loading="lazy" onclick="openImageModal(this.src)">
+                            </div>
+                            <div class="preview-item" data-index="2">
+                                <img src="pics/metadata/metadata_photo.png" alt="Photo Metadata" loading="lazy" onclick="openImageModal(this.src)">
+                            </div>
+                        </div>
+
+                        <!-- 右箭头 -->
+                        <button class="metadata-arrow metadata-next" aria-label="Next">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- 右侧文字内容 -->
+                    <div class="metadata-text">
+                        <h2 data-lang="zh">强大的元数据面板</h2>
+                        <h2 data-lang="en">Powerful Metadata Panel</h2>
+                        
+                        <p class="intro" data-lang="zh">强大的文件信息中心与编辑器。选择任意文件，其丰富的元数据立即呈现并支持实时编辑。支持多种文件类型的专业元数据提取和管理，直接复制元数据信息应用到重命名规则，使文件整理更加精准高效。</p>
+                        <p class="intro" data-lang="en">A powerful file information center and editor. Select any file to instantly view its rich metadata with real-time editing support. Supports professional metadata extraction and management for multiple file types, allowing direct copying of metadata to renaming rules for more precise file organization.</p>
+
+                        <!-- 文字描述 -->
+                        <div class="metadata-description">
+                            <div class="description-item">
+                                <h3 data-lang="zh">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M9 18V5l12-2v13M9 18c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm12-2c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zM9 9l12-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    音频文件
+                                </h3>
+                                <h3 data-lang="en">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M9 18V5l12-2v13M9 18c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm12-2c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zM9 9l12-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Audio Files
+                                </h3>
+                                <p data-lang="zh">全面支持MP3、FLAC、M4A、OGG等主流音频格式。自动提取并显示完整的ID3标签信息，包括标题、艺术家、专辑、作曲家、曲目号、年份、流派等关键元数据。内置轻量级编辑器，支持直接修改音频标签并即时保存，让音乐收藏管理变得简单高效。</p>
+                                <p data-lang="en">Comprehensive support for mainstream audio formats including MP3, FLAC, M4A, and OGG. Automatically extracts and displays complete ID3 tag information such as title, artist, album, composer, track number, year, and genre. Built-in lightweight editor allows direct modification of audio tags with instant saving, making music collection management simple and efficient.</p>
+                            </div>
+                            <div class="description-item">
+                                <h3 data-lang="zh">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M23 7l-7 5 7 5V7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    视频文件
+                                </h3>
+                                <h3 data-lang="en">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M23 7l-7 5 7 5V7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Video Files
+                                </h3>
+                                <p data-lang="zh">完整展示视频文件的技术参数，包括编码格式、比特率、分辨率、帧率等核心信息。深度解析多媒体结构，显示音视频轨道数量、字幕轨道详情以及精确的时长信息，为视频文件管理提供全面的技术支持。</p>
+                                <p data-lang="en">Comprehensively displays technical parameters of video files, including encoding format, bitrate, resolution, frame rate, and other core information. Deep analysis of multimedia structure showing audio/video track counts, subtitle track details, and precise duration information, providing comprehensive technical support for video file management.</p>
+                            </div>
+                            <div class="description-item">
+                                <h3 data-lang="zh">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                                        <path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    图像文件
+                                </h3>
+                                <h3 data-lang="en">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                                        <path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Image Files
+                                </h3>
+                                <p data-lang="zh">详细呈现图像文件的基础属性和专业参数，包括分辨率、色彩空间等关键信息。智能提取常用的Exif元数据，涵盖相机制造商、型号、镜头规格、曝光参数、地理位置等核心摄影信息，为摄影作品的归档和管理提供专业支持。</p>
+                                <p data-lang="en">Displays detailed fundamental attributes and professional parameters of image files, including resolution, color space, and other key information. Intelligently extracts commonly used Exif metadata covering camera manufacturer, model, lens specifications, exposure parameters, GPS location, and other core photographic information, providing professional support for photography archiving and management.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 布局切换功能介绍 -->
+            <section class="layout-feature">
+                <div class="layout-content">
+                    <!-- 左侧图片预览（带箭头） -->
+                    <div class="layout-image-wrapper">
+                        <!-- 左箭头 -->
+                        <button class="layout-arrow layout-prev" aria-label="Previous">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+
+                        <div class="layout-image">
+                            <div class="preview-item active" data-index="0">
+                                <img src="pics/layout/vertical.png" alt="Vertical Layout" loading="lazy" onclick="openImageModal(this.src)">
+                            </div>
+                            <div class="preview-item" data-index="1">
+                                <img src="pics/layout/horizontal.png" alt="Horizontal Layout" loading="lazy" onclick="openImageModal(this.src)">
+                            </div>
+                        </div>
+
+                        <!-- 右箭头 -->
+                        <button class="layout-arrow layout-next" aria-label="Next">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- 右侧文字内容 -->
+                    <div class="layout-text">
+                        <h2 data-lang="zh">灵活的布局切换</h2>
+                        <h2 data-lang="en">Flexible Layout Switching</h2>
+                        
+                        <p class="intro" data-lang="zh">工作区布局随心切换，完美适配不同工作场景和个人偏好。通过工具栏的布局切换按钮，一键在水平布局和垂直布局之间自由切换，让您的工作空间始终保持最佳状态。</p>
+                        <p class="intro" data-lang="en">Switch workspace layouts effortlessly to perfectly adapt to different work scenarios and personal preferences. With the layout toggle button in the toolbar, seamlessly switch between horizontal and vertical layouts with one click, keeping your workspace always optimized.</p>
+
+                        <!-- 文字描述 -->
+                        <div class="layout-description">
+                            <div class="description-item">
+                                <h3 data-lang="zh">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="18" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                        <rect x="3" y="14" width="18" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    垂直布局
+                                </h3>
+                                <h3 data-lang="en">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="18" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                        <rect x="3" y="14" width="18" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    Vertical Layout
+                                </h3>
+                                <p data-lang="zh">左右分栏设计，左侧栏上下分为文件区和规则区，右侧为可收起的元数据面板。适合注重文件列表和规则配置同步查看的工作流程，通过上下排列让文件操作更加便捷直观。</p>
+                                <p data-lang="en">Side-by-side design with the left panel divided into file area (top) and rule area (bottom), while the right side features a collapsible metadata panel. Ideal for workflows emphasizing simultaneous viewing of file lists and rule configurations, with vertical arrangement for more intuitive file operations.</p>
+                            </div>
+                            <div class="description-item">
+                                <h3 data-lang="zh">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
+                                        <rect x="14" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    水平布局
+                                </h3>
+                                <h3 data-lang="en">
+                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
+                                        <rect x="14" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    Horizontal Layout
+                                </h3>
+                                <p data-lang="zh">左中右三栏布局，左侧为可收起的规则区，中间为文件列表，右侧为可收起的元数据面板。适合宽屏显示器，让文件列表始终位于视觉中心，左右面板可按需收起以获得更大的文件显示区域，灵活高效。</p>
+                                <p data-lang="en">Left-center-right three-column layout with collapsible rule area on the left, file list in the center, and collapsible metadata panel on the right. Perfect for widescreen monitors, keeping the file list at the visual center while left and right panels can be collapsed as needed for maximum file display area, flexible and efficient.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 主题切换功能介绍 -->
+            <section class="theme-feature">
+                <div class="theme-content">
+                    <!-- 左侧图片 -->
+                    <div class="theme-image">
+                        <img src="pics/theme.png" alt="Light and Dark Theme" loading="lazy" onclick="openImageModal(this.src)">
+                    </div>
+
+                    <!-- 右侧文字内容 -->
+                    <div class="theme-text">
+                        <h2 data-lang="zh">亮暗双主题</h2>
+                        <h2 data-lang="en">Light & Dark Theme</h2>
+                        
+                        <p data-lang="zh">完美支持浅色和深色两种主题模式，自动适配系统主题设置，也可手动切换。无论白天黑夜，都为您提供舒适的视觉体验，保护眼睛，提升工作效率。</p>
+                        <p data-lang="en">Fully supports both light and dark theme modes, automatically adapting to system theme settings with manual override option. Whether day or night, provides a comfortable visual experience, protecting your eyes and enhancing work efficiency.</p>
+                    </div>
                 </div>
             </section>
         </main>
+
+        <!-- 图片放大查看 Modal -->
+        <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+            <button class="image-modal-close" onclick="closeImageModal()" aria-label="Close">×</button>
+            <img id="modalImage" src="" alt="Full size preview">
+        </div>
 
         <footer class="footer">
             <p data-lang="zh">© 2025 Lightning Renamer. 保留所有权利。</p>
             <p data-lang="en">© 2025 Lightning Renamer. All rights reserved.</p>
         </footer>
 
+        <script src="script.js"></script>
         <script>
-            // 语言切换
-            function toggleLanguage() {
-                const html = document.documentElement;
-                const newLang = html.classList.contains('lang-zh') ? 'en' : 'zh';
-
-                // 移除旧的语言类
-                html.classList.remove('lang-zh', 'lang-en');
-                // 添加新的语言类
-                html.classList.add(`lang-${newLang}`);
-                html.setAttribute('lang', newLang);
-
-                // 保存语言偏好
-                try {
-                    localStorage.setItem('preferred-language', newLang);
-                } catch (e) {
-                    console.warn('Failed to save language preference:', e);
-                }
+            // 图片放大查看功能
+            function openImageModal(src) {
+                const modal = document.getElementById('imageModal');
+                const modalImg = document.getElementById('modalImage');
+                modalImg.src = src;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 禁止背景滚动
             }
 
-            // 主题切换
-            function toggleTheme() {
-                const body = document.body;
-                const html = document.documentElement;
-                const lightIcon = document.querySelector('.light-icon');
-                const darkIcon = document.querySelector('.dark-icon');
-                
-                // 切换主题 - 检查body或html的主题设置
-                const currentTheme = body.getAttribute('data-theme') || html.getAttribute('data-theme') || 'light';
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                // 同时设置body和html的主题
-                body.setAttribute('data-theme', newTheme);
-                html.setAttribute('data-theme', newTheme);
-                
-                // 更新图标显示
-                if (newTheme === 'dark') {
-                    lightIcon.style.display = 'none';
-                    darkIcon.style.display = 'block';
-                } else {
-                    lightIcon.style.display = 'block';
-                    darkIcon.style.display = 'none';
-                }
-                
-                // 保存主题偏好
-                try {
-                    localStorage.setItem('preferred-theme', newTheme);
-                } catch (e) {
-                    console.warn('Failed to save theme preference:', e);
-                }
+            function closeImageModal() {
+                const modal = document.getElementById('imageModal');
+                modal.classList.remove('active');
+                document.body.style.overflow = ''; // 恢复滚动
             }
 
-            // 页面加载时检查并应用保存的语言和主题偏好
-            document.addEventListener('DOMContentLoaded', () => {
-                const html = document.documentElement;
-                const body = document.body;
-                const lightIcon = document.querySelector('.light-icon');
-                const darkIcon = document.querySelector('.dark-icon');
-                
-                // 应用保存的语言偏好
-                try {
-                    const savedLang = localStorage.getItem('preferred-language');
-                    const validLang = savedLang === 'en' || savedLang === 'zh' ? savedLang : 'en';
-
-                    // 移除旧的语言类
-                    html.classList.remove('lang-zh', 'lang-en');
-                    // 添加新的语言类
-                    html.classList.add(`lang-${validLang}`);
-                    html.setAttribute('lang', validLang);
-                } catch (e) {
-                    console.error('Error loading language preference:', e);
-                    // 出错时使用默认英文
-                    html.classList.add('lang-en');
-                    html.setAttribute('lang', 'en');
-                }
-                
-                // 应用保存的主题偏好
-                try {
-                    const savedTheme = localStorage.getItem('preferred-theme');
-                    const validTheme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'light';
-                    
-                    if (validTheme === 'dark') {
-                        body.setAttribute('data-theme', 'dark');
-                        html.setAttribute('data-theme', 'dark');
-                        lightIcon.style.display = 'none';
-                        darkIcon.style.display = 'block';
-                    } else {
-                        body.setAttribute('data-theme', 'light');
-                        html.setAttribute('data-theme', 'light');
-                        lightIcon.style.display = 'block';
-                        darkIcon.style.display = 'none';
-                    }
-                } catch (e) {
-                    console.error('Error loading theme preference:', e);
-                    // 出错时使用默认亮色模式
-                    body.setAttribute('data-theme', 'light');
-                    html.setAttribute('data-theme', 'light');
+            // ESC键关闭modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeImageModal();
                 }
             });
+
+            // 筛选功能箭头切换功能
+            function initFilterArrows() {
+                let currentIndex = 0;
+                const totalItems = 2; // 基础筛选、高级筛选
+                
+                const prevBtn = document.querySelector('.filter-prev');
+                const nextBtn = document.querySelector('.filter-next');
+                
+                function goToSlide(index) {
+                    // 循环处理索引
+                    if (index < 0) index = totalItems - 1;
+                    if (index >= totalItems) index = 0;
+                    
+                    currentIndex = index;
+                    
+                    // 只切换图片，不切换文字
+                    document.querySelectorAll('.filter-image .preview-item').forEach(p => p.classList.remove('active'));
+                    document.querySelector(`.filter-image .preview-item[data-index="${index}"]`).classList.add('active');
+                }
+                
+                // 绑定按钮事件
+                prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+                nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+            }
+
+            // 布局切换功能箭头切换功能
+            function initLayoutArrows() {
+                let currentIndex = 0;
+                const totalItems = 2; // 垂直布局、水平布局
+                
+                const prevBtn = document.querySelector('.layout-prev');
+                const nextBtn = document.querySelector('.layout-next');
+                
+                function goToSlide(index) {
+                    // 循环处理索引
+                    if (index < 0) index = totalItems - 1;
+                    if (index >= totalItems) index = 0;
+                    
+                    currentIndex = index;
+                    
+                    // 只切换图片，不切换文字
+                    document.querySelectorAll('.layout-image .preview-item').forEach(p => p.classList.remove('active'));
+                    document.querySelector(`.layout-image .preview-item[data-index="${index}"]`).classList.add('active');
+                }
+                
+                // 绑定按钮事件
+                prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+                nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+            }
+
+            // 元数据箭头切换功能
+            function initMetadataArrows() {
+                let currentIndex = 0;
+                const totalItems = 3; // 音频、视频、图像
+                
+                const prevBtn = document.querySelector('.metadata-prev');
+                const nextBtn = document.querySelector('.metadata-next');
+                
+                function goToSlide(index) {
+                    // 循环处理索引
+                    if (index < 0) index = totalItems - 1;
+                    if (index >= totalItems) index = 0;
+                    
+                    currentIndex = index;
+                    
+                    // 只切换图片，不切换文字
+                    document.querySelectorAll('.metadata-image .preview-item').forEach(p => p.classList.remove('active'));
+                    document.querySelector(`.metadata-image .preview-item[data-index="${index}"]`).classList.add('active');
+                }
+                
+                // 绑定按钮事件
+                prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+                nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+            }
+            
+            // 页面加载后初始化
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    initFilterArrows();
+                    initLayoutArrows();
+                    initMetadataArrows();
+                });
+            } else {
+                initFilterArrows();
+                initLayoutArrows();
+                initMetadataArrows();
+            }
         </script>
     </body>
 </html>

@@ -2,6 +2,7 @@
 .specstory/
 *.log
 .DS_Store
+Documentation/
 
 # 临时文件
 *.tmp
