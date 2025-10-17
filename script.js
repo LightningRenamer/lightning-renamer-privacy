@@ -117,34 +117,6 @@ function toggleLanguage() {
     }
 }
 
-// 主题切换
-function toggleTheme() {
-    const html = document.documentElement;
-    const body = document.body;
-    const lightIcon = document.querySelector('.light-icon');
-    const darkIcon = document.querySelector('.dark-icon');
-    
-    const currentTheme = html.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    html.setAttribute('data-theme', newTheme);
-    body.setAttribute('data-theme', newTheme);
-    
-    if (newTheme === 'dark') {
-        lightIcon.style.display = 'none';
-        darkIcon.style.display = 'block';
-    } else {
-        lightIcon.style.display = 'block';
-        darkIcon.style.display = 'none';
-    }
-    
-    try {
-        localStorage.setItem('preferred-theme', newTheme);
-    } catch (e) {
-        console.warn('无法保存主题偏好:', e);
-    }
-}
-
 // 轮播图切换 - 3D卡片堆叠效果
 function goToSlide(index) {
     const slides = document.querySelectorAll('.carousel-slide');
@@ -259,9 +231,6 @@ function stopAutoPlay() {
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', () => {
     const html = document.documentElement;
-    const body = document.body;
-    const lightIcon = document.querySelector('.light-icon');
-    const darkIcon = document.querySelector('.dark-icon');
     
     // 应用保存的语言偏好
     try {
@@ -273,26 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
         console.warn('无法读取语言偏好:', e);
         html.classList.add('lang-en');
-    }
-    
-    // 应用保存的主题偏好
-    try {
-        const savedTheme = localStorage.getItem('preferred-theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-        
-        html.setAttribute('data-theme', theme);
-        body.setAttribute('data-theme', theme);
-        
-        if (theme === 'dark') {
-            lightIcon.style.display = 'none';
-            darkIcon.style.display = 'block';
-        } else {
-            lightIcon.style.display = 'block';
-            darkIcon.style.display = 'none';
-        }
-    } catch (e) {
-        console.warn('无法读取主题偏好:', e);
     }
     
     // 初始化轮播指示器

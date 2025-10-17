@@ -4,49 +4,8 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Lightning Renamer - 智能文件重命名工具</title>
-        <script>
-            // 防止暗色主题闪烁：在页面渲染前立即应用主题
-            (function() {
-                try {
-                    const savedTheme = localStorage.getItem('preferred-theme');
-                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-                    
-                    if (theme === 'dark') {
-                        document.documentElement.setAttribute('data-theme', 'dark');
-                        document.body.setAttribute('data-theme', 'dark');
-                    }
-                } catch (e) {
-                    // 忽略错误，使用默认主题
-                }
-            })();
-        </script>
         <style>
             :root {
-                --background-color: #fafbfc;
-                --text-color: #334155;
-                --header-background: rgba(255, 255, 255, 0.9);
-                --card-background: #ffffff;
-                --shadow-color: rgba(0, 0, 0, 0.08);
-                --primary-color: #6366f1;
-                --primary-dark: #4f46e5;
-                --primary-light: #818cf8;
-                --accent-color: #ec4899;
-                --accent-light: #f472b6;
-                --secondary-color: #64748b;
-                --hover-color: #f8fafc;
-                --button-background: #f1f5f9;
-                --border-color: #e2e8f0;
-                --heading-color: #0f172a;
-                --footer-background: #f8fafc;
-                --content-max-width: 1200px;
-                --heading-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-                --card-hover-shadow: 0 20px 50px rgba(99, 102, 241, 0.15);
-                --gradient-start: #6366f1;
-                --gradient-end: #ec4899;
-            }
-
-            [data-theme="dark"] {
                 --background-color: #0f172a;
                 --text-color: #e2e8f0;
                 --header-background: rgba(30, 41, 59, 0.9);
@@ -63,15 +22,14 @@
                 --border-color: #334155;
                 --heading-color: #f1f5f9;
                 --footer-background: #1e293b;
+                --content-max-width: 1200px;
+                --heading-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
                 --card-hover-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
+                --gradient-start: #6366f1;
+                --gradient-end: #ec4899;
             }
 
-            /* 防止暗色主题闪烁的默认样式 */
             html {
-                background-color: #fafbfc;
-            }
-            
-            html[data-theme="dark"] {
                 background-color: #0f172a;
             }
 
@@ -94,27 +52,196 @@
                 position: relative;
             }
 
+            /* 背景网格 */
             body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: 
+                    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+                background-size: 60px 60px;
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            /* 浮动光晕 */
+            body::after {
                 content: '';
                 position: fixed;
                 top: -50%;
                 right: -25%;
                 width: 100%;
                 height: 100%;
-                background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+                background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
                 animation: float 20s ease-in-out infinite;
                 pointer-events: none;
                 z-index: 0;
             }
 
-            [data-theme="dark"] body::before {
-                background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            /* 装饰性几何图形 */
+            .geometric-bg {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+                z-index: 0;
+                overflow: hidden;
+            }
+
+
+            /* 点状装饰 */
+            @supports (mask-image: radial-gradient(circle, black, transparent)) {
+                .geometric-bg {
+                    background-image: radial-gradient(circle, rgba(129, 140, 248, 0.08) 1px, transparent 1px);
+                    background-size: 40px 40px;
+                    background-position: 0 0, 20px 20px;
+                }
+            }
+
+            /* 光线装饰 */
+            .light-rays {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 800px;
+                height: 800px;
+                margin: -400px 0 0 -400px;
+                background: conic-gradient(
+                    from 0deg,
+                    transparent 0deg,
+                    rgba(129, 140, 248, 0.03) 10deg,
+                    transparent 20deg,
+                    transparent 40deg,
+                    rgba(244, 114, 182, 0.03) 50deg,
+                    transparent 60deg,
+                    transparent 80deg,
+                    rgba(129, 140, 248, 0.03) 90deg,
+                    transparent 100deg
+                );
+                animation: rotateRays 60s linear infinite;
+                opacity: 0.6;
+            }
+
+            /* 浮动粒子效果 */
+            .floating-particles {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: 
+                    radial-gradient(2px 2px at 20% 30%, rgba(129, 140, 248, 0.4), transparent),
+                    radial-gradient(2px 2px at 60% 70%, rgba(244, 114, 182, 0.4), transparent),
+                    radial-gradient(1px 1px at 50% 50%, rgba(129, 140, 248, 0.3), transparent),
+                    radial-gradient(1px 1px at 80% 10%, rgba(244, 114, 182, 0.3), transparent),
+                    radial-gradient(2px 2px at 90% 60%, rgba(129, 140, 248, 0.4), transparent),
+                    radial-gradient(1px 1px at 30% 80%, rgba(244, 114, 182, 0.3), transparent);
+                background-size: 200% 200%;
+                background-position: 0% 0%;
+                animation: particleFloat 40s ease-in-out infinite;
+            }
+
+            /* 抽象形状 */
+            .abstract-shape {
+                position: absolute;
+                background: linear-gradient(135deg, rgba(129, 140, 248, 0.06), rgba(244, 114, 182, 0.06));
+                filter: blur(40px);
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+                animation: morphShape 15s ease-in-out infinite;
+            }
+
+            .shape-1 {
+                top: 20%;
+                right: 15%;
+                width: 300px;
+                height: 300px;
+                animation-delay: 0s;
+            }
+
+            .shape-2 {
+                bottom: 25%;
+                left: 10%;
+                width: 250px;
+                height: 250px;
+                animation-delay: 5s;
+            }
+
+            .shape-3 {
+                top: 60%;
+                right: 25%;
+                width: 200px;
+                height: 200px;
+                animation-delay: 10s;
             }
 
             @keyframes float {
                 0%, 100% { transform: translate(0, 0) rotate(0deg); }
                 33% { transform: translate(30px, -30px) rotate(120deg); }
                 66% { transform: translate(-20px, 20px) rotate(240deg); }
+            }
+
+            @keyframes morphing {
+                0%, 100% { 
+                    transform: rotate(0deg) scale(1);
+                    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+                }
+                25% { 
+                    transform: rotate(10deg) scale(1.05);
+                    clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+                }
+                50% { 
+                    transform: rotate(-5deg) scale(0.95);
+                    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+                }
+                75% { 
+                    transform: rotate(15deg) scale(1.1);
+                    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+                }
+            }
+
+            @keyframes rotateRays {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+
+            @keyframes particleFloat {
+                0%, 100% { 
+                    background-position: 0% 0%, 100% 100%, 50% 50%, 80% 20%, 90% 70%, 30% 90%;
+                }
+                25% { 
+                    background-position: 20% 10%, 80% 90%, 60% 40%, 70% 30%, 95% 60%, 25% 85%;
+                }
+                50% { 
+                    background-position: 40% 20%, 60% 80%, 70% 30%, 60% 40%, 85% 65%, 20% 80%;
+                }
+                75% { 
+                    background-position: 30% 15%, 70% 85%, 55% 45%, 75% 25%, 90% 70%, 35% 90%;
+                }
+            }
+
+            @keyframes morphShape {
+                0%, 100% {
+                    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+                    transform: rotate(0deg) scale(1);
+                }
+                25% {
+                    border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+                    transform: rotate(90deg) scale(1.1);
+                }
+                50% {
+                    border-radius: 50% 50% 50% 50% / 60% 40% 60% 40%;
+                    transform: rotate(180deg) scale(0.9);
+                }
+                75% {
+                    border-radius: 30% 70% 60% 40% / 40% 60% 50% 50%;
+                    transform: rotate(270deg) scale(1.05);
+                }
             }
 
             .header {
@@ -250,26 +377,6 @@
                 border-color: var(--primary-light);
             }
 
-            .theme-switch {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-left: 1rem;
-                width: 36px;
-                height: 36px;
-                padding: 0;
-            }
-
-            .theme-icon {
-                width: 20px;
-                height: 20px;
-                transition: all 0.3s ease;
-                flex-shrink: 0;
-            }
-
-            .theme-icon:hover {
-                transform: scale(1.1) rotate(15deg);
-            }
 
             .main {
                 max-width: var(--content-max-width);
@@ -462,178 +569,66 @@
                 z-index: 1;
             }
 
-            /* 集成式规则展示 - 轮播图模式 */
+            /* 规则展示 - 简洁模式 */
             .rules-integrated {
                 padding: 6rem 2rem;
             }
 
-            /* 轮播图容器 */
-            .carousel-wrapper {
-                position: relative;
+            .rules-content {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .rules-images-container {
                 max-width: 1200px;
                 margin: 0 auto 3rem;
-                display: flex;
-                align-items: center;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 2rem;
-                height: 600px;
             }
 
-            /* 轮播图主容器 - 3D透视 */
-            .carousel-container {
-                flex: 1;
-                position: relative;
-                height: 600px;
-                perspective: 2000px;
-                transform-style: preserve-3d;
-                overflow: visible;
-            }
-
-            /* 轮播轨道 - 3D空间 */
-            .carousel-track {
-                position: relative;
+            .rules-images-container img {
                 width: 100%;
-                height: 100%;
-                transform-style: preserve-3d;
-            }
-
-            /* 轮播幻灯片 - 3D卡片 */
-            .carousel-slide {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: auto;
                 height: auto;
-                transform: translate(-50%, -50%);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: transparent;
-                border-radius: 20px;
-                transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-                transform-style: preserve-3d;
-                backface-visibility: visible;
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: zoom-in;
             }
 
-            .carousel-slide img {
-                display: block;
-                width: auto;
-                height: auto;
-                max-width: none;
-                max-height: none;
-                border-radius: 12px;
-                transition: all 0.4s ease;
+            .rules-images-container img:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
             }
 
-            /* 中心卡片 */
-            .carousel-slide.active {
-                z-index: 10;
-                opacity: 1;
-                transform: translate(-50%, -50%) translateZ(0) rotateY(0deg) scale(1);
+            .rules-text {
+                text-align: left;
             }
 
-            /* 左侧卡片 */
-            .carousel-slide.prev {
-                z-index: 5;
-                opacity: 0.5;
-                transform: translate(-120%, -50%) translateZ(-300px) rotateY(35deg) scale(0.75);
-                filter: brightness(0.7);
+            .rules-text h2 {
+                font-size: 2.25rem;
+                font-weight: 800;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+                color: var(--heading-color);
+                font-family: var(--heading-font);
+                letter-spacing: -0.02em;
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
 
-            /* 右侧卡片 */
-            .carousel-slide.next {
-                z-index: 5;
-                opacity: 0.5;
-                transform: translate(20%, -50%) translateZ(-300px) rotateY(-35deg) scale(0.75);
-                filter: brightness(0.7);
-            }
-
-            /* 隐藏的卡片 */
-            .carousel-slide.hidden {
-                z-index: 1;
-                opacity: 0;
-                transform: translate(-50%, -50%) translateZ(-500px) scale(0.5);
-                pointer-events: none;
-            }
-
-            /* 中心卡片悬停效果 */
-            .carousel-slide.active:hover {
-                transform: translate(-50%, -50%) translateZ(20px) rotateY(0deg) scale(1.02);
-            }
-
-            .carousel-slide.active:hover img {
-                transform: scale(1.02);
-            }
-
-            /* 箭头按钮 */
-            .carousel-arrow {
-                width: 56px;
-                height: 56px;
-                border-radius: 50%;
-                border: 1px solid rgba(0, 0, 0, 0.1);
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(20px);
+            .rules-text p {
+                font-size: 1.05rem;
+                line-height: 1.8;
                 color: var(--text-color);
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                flex-shrink: 0;
-                position: relative;
-                z-index: 100;
+                margin-bottom: 1.5rem;
+                opacity: 0.9;
             }
 
-            [data-theme="dark"] .carousel-arrow {
-                background: rgba(30, 41, 59, 0.8);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-
-            .carousel-arrow:hover {
-                background: rgba(255, 255, 255, 1);
-                box-shadow: 0 8px 30px rgba(99, 102, 241, 0.3);
-                transform: scale(1.1);
-            }
-
-            [data-theme="dark"] .carousel-arrow:hover {
-                background: rgba(30, 41, 59, 1);
-            }
-
-            .carousel-arrow:active {
-                transform: scale(0.95);
-            }
-
-            .carousel-arrow svg {
-                width: 24px;
-                height: 24px;
-                stroke: currentColor;
-            }
-
-            /* 指示器 */
-            .carousel-indicators {
-                display: none;
-            }
-
-            .indicator-dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: var(--border-color);
-                border: none;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                padding: 0;
-            }
-
-            .indicator-dot:hover {
-                background: var(--primary-color);
-                transform: scale(1.2);
-            }
-
-            .indicator-dot.active {
-                background: var(--primary-color);
-                width: 24px;
-                border-radius: 4px;
+            .rules-text p:last-child {
+                margin-bottom: 0;
             }
 
             .rules-section-title {
@@ -676,6 +671,18 @@
 
             .rules-text-area .rule-details {
                 animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .rules-text-area h3 {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: var(--heading-color);
+                margin-bottom: 1.5rem;
+                margin-top: 0;
+                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
 
             .rule-details {
@@ -749,36 +756,29 @@
             }
 
             .scope-content {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
-                align-items: center;
-                max-width: 1200px;
+                max-width: 1400px;
                 margin: 0 auto;
             }
 
             .scope-image {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                order: 1;
+                margin-bottom: 3rem;
+                max-width: 900px;
+                margin-left: auto;
+                margin-right: auto;
             }
 
             .scope-image img {
                 width: 100%;
                 height: auto;
                 border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-                transition: transform 0.4s ease, box-shadow 0.4s ease;
-            }
-
-            .scope-image img {
-                cursor: pointer;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                cursor: zoom-in;
             }
 
             .scope-image img:hover {
-                transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+                transform: translateY(-8px);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
             }
 
             /* 图片放大查看 Modal */
@@ -853,7 +853,7 @@
             }
 
             .scope-text {
-                order: 2;
+                text-align: left;
             }
 
             .scope-text h2 {
@@ -889,87 +889,38 @@
             }
 
             .filter-content {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
-                align-items: center;
-                max-width: 1200px;
+                max-width: 1400px;
                 margin: 0 auto;
             }
 
-            /* 左侧图片容器（带箭头） */
+            /* 图片容器 */
             .filter-image-wrapper {
-                display: flex;
-                align-items: center;
-                gap: 1.5rem;
-                order: 2;
-            }
-
-            .filter-image {
-                flex: 1;
+                margin-bottom: 3rem;
+                max-width: 1200px;
+                margin-left: auto;
+                margin-right: auto;
                 display: grid;
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
             }
 
-            .filter-image .preview-item {
-                grid-column: 1;
-                grid-row: 1;
-                width: 100%;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                pointer-events: none;
-            }
-
-            .filter-image .preview-item.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            .filter-image img {
+            .filter-image-wrapper img {
                 width: 100%;
                 height: auto;
                 border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-                transition: transform 0.4s ease, box-shadow 0.4s ease;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
                 cursor: zoom-in;
             }
 
-            .filter-image img:hover {
-                transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            .filter-image-wrapper img:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
             }
 
-            /* 箭头按钮 */
-            .filter-arrow {
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                background: var(--card-background);
-                border: 2px solid var(--border-color);
-                color: var(--text-color);
-                cursor: pointer;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-            }
-
-            .filter-arrow:hover {
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                border-color: transparent;
-                color: white;
-                transform: scale(1.1);
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            }
-
-            .filter-arrow:active {
-                transform: scale(0.95);
-            }
-
-            /* 右侧文字 */
+            /* 文字区 */
             .filter-text {
-                order: 1;
+                text-align: left;
             }
 
             .filter-text h2 {
@@ -1016,35 +967,14 @@
                 margin: 0 auto;
             }
 
-            /* 左侧图片容器（带箭头） */
             .layout-image-wrapper {
                 display: flex;
-                align-items: center;
-                gap: 1.5rem;
+                flex-direction: column;
+                gap: 2rem;
                 order: 1;
             }
 
-            .layout-image {
-                flex: 1;
-                display: grid;
-                grid-template-columns: 1fr;
-            }
-
-            .layout-image .preview-item {
-                grid-column: 1;
-                grid-row: 1;
-                width: 100%;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                pointer-events: none;
-            }
-
-            .layout-image .preview-item.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            .layout-image img {
+            .layout-image-wrapper img {
                 width: 100%;
                 height: auto;
                 border-radius: 16px;
@@ -1053,40 +983,11 @@
                 cursor: zoom-in;
             }
 
-            .layout-image img:hover {
+            .layout-image-wrapper img:hover {
                 transform: translateY(-8px) scale(1.02);
                 box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
             }
 
-            /* 箭头按钮 */
-            .layout-arrow {
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                background: var(--card-background);
-                border: 2px solid var(--border-color);
-                color: var(--text-color);
-                cursor: pointer;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-            }
-
-            .layout-arrow:hover {
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                border-color: transparent;
-                color: white;
-                transform: scale(1.1);
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            }
-
-            .layout-arrow:active {
-                transform: scale(0.95);
-            }
-
-            /* 右侧文字 */
             .layout-text {
                 order: 2;
             }
@@ -1185,87 +1086,36 @@
             }
 
             .metadata-content {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
-                align-items: center;
-                max-width: 1200px;
+                max-width: 1400px;
                 margin: 0 auto;
             }
 
-            /* 左侧图片容器（带箭头） */
             .metadata-image-wrapper {
-                display: flex;
-                align-items: center;
-                gap: 1.5rem;
-                order: 1;
-            }
-
-            .metadata-image {
-                flex: 1;
+                margin-bottom: 3rem;
+                max-width: 1200px;
+                margin-left: auto;
+                margin-right: auto;
                 display: grid;
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
             }
 
-            .metadata-image .preview-item {
-                grid-column: 1;
-                grid-row: 1;
-                width: 100%;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                pointer-events: none;
-            }
-
-            .metadata-image .preview-item.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            .metadata-image img {
+            .metadata-image-wrapper img {
                 width: 100%;
                 height: auto;
                 border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-                transition: transform 0.4s ease, box-shadow 0.4s ease;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
                 cursor: zoom-in;
             }
 
-            .metadata-image img:hover {
-                transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            .metadata-image-wrapper img:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
             }
 
-            /* 箭头按钮 */
-            .metadata-arrow {
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                background: var(--card-background);
-                border: 2px solid var(--border-color);
-                color: var(--text-color);
-                cursor: pointer;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-            }
-
-            .metadata-arrow:hover {
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                border-color: transparent;
-                color: white;
-                transform: scale(1.1);
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            }
-
-            .metadata-arrow:active {
-                transform: scale(0.95);
-            }
-
-            /* 右侧文字 */
             .metadata-text {
-                order: 2;
+                text-align: left;
             }
 
             .metadata-text h2 {
@@ -1589,53 +1439,10 @@
                     margin-bottom: 3rem;
                 }
 
-                .carousel-wrapper {
-                    gap: 1rem;
-                    height: 450px;
-                }
-
-                .carousel-container {
-                    height: 450px;
-                }
-
-                .carousel-slide {
-                    width: 70%;
-                }
-
-                .carousel-slide.prev {
-                    transform: translate(-130%, -50%) translateZ(-200px) rotateY(30deg) scale(0.7);
-                }
-
-                .carousel-slide.next {
-                    transform: translate(30%, -50%) translateZ(-200px) rotateY(-30deg) scale(0.7);
-                }
-
-                .carousel-arrow {
-                    width: 48px;
-                    height: 48px;
-                }
-
-                .carousel-arrow svg {
-                    width: 20px;
-                    height: 20px;
-                }
-
-                .carousel-slide img {
-                    max-width: 95%;
-                    max-height: none;
-                }
-
-                .carousel-indicators {
-                    margin: 1.5rem 0 2rem;
-                }
-
-                .indicator-dot {
-                    width: 6px;
-                    height: 6px;
-                }
-
-                .indicator-dot.active {
-                    width: 20px;
+                .rules-images-container {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                    padding: 0 1rem;
                 }
 
                 .rules-text-area {
@@ -1644,14 +1451,23 @@
                     margin: 0 1rem;
                 }
 
-                .detail-header {
-                    flex-direction: column;
-                    align-items: flex-start;
-                    gap: 1rem;
+                /* 筛选功能响应式 */
+                .filter-image-wrapper {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                    padding: 0 1rem;
                 }
 
-                .detail-header h2 {
-                    font-size: 1.75rem;
+                /* 元数据面板响应式 */
+                .metadata-image-wrapper {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                    padding: 0 1rem;
+                }
+
+                /* 作用域功能响应式 */
+                .scope-image {
+                    padding: 0 1rem;
                 }
 
                 .detail-number {
@@ -1733,6 +1549,7 @@
 
                 .layout-image-wrapper {
                     order: 1;
+                    gap: 1.5rem;
                 }
 
                 .layout-text {
@@ -1819,6 +1636,15 @@
         </style>
     </head>
     <body>
+        <!-- 装饰性背景 -->
+        <div class="geometric-bg">
+            <div class="light-rays"></div>
+            <div class="floating-particles"></div>
+            <div class="abstract-shape shape-1"></div>
+            <div class="abstract-shape shape-2"></div>
+            <div class="abstract-shape shape-3"></div>
+        </div>
+        
         <header class="header">
             <nav class="nav">
                 <a href="index.html" class="logo">
@@ -1830,14 +1656,6 @@
                     <a href="terms.html" data-lang="zh">用户协议</a>
                     <a href="terms.html" data-lang="en">Terms of Service</a>
                     <button class="button language-switch" onclick="toggleLanguage()">EN/中文</button>
-                    <button class="button theme-switch" onclick="toggleTheme()">
-                        <svg class="theme-icon light-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
-                        </svg>
-                        <svg class="theme-icon dark-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-                            <path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/>
-                        </svg>
-                    </button>
                 </div>
             </nav>
         </header>
@@ -1866,88 +1684,21 @@
 
             <!-- 集成式规则展示 -->
             <section class="rules-integrated">
-                <div class="rules-section-title">
-                    <h2 data-lang="zh">13种专业重命名规则</h2>
-                    <h2 data-lang="en">13 Professional Renaming Rules</h2>
-                    <p data-lang="zh">从简单的文本替换到复杂的正则表达式，满足您的一切需求。</p>
-                    <p data-lang="en">From simple text replacement to complex regular expressions, satisfying all your renaming needs.</p>
-                </div>
-
-                <!-- 轮播图容器 -->
-                <div class="carousel-wrapper">
-                    <!-- 左箭头 -->
-                    <button class="carousel-arrow carousel-prev" aria-label="Previous">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-
-                    <!-- 图片轮播区 -->
-                    <div class="carousel-container">
-                        <div class="carousel-track">
-                            <div class="carousel-slide" data-rule="replace">
-                                <img src="pics/rules/replace.png" alt="Replace Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="insert">
-                                <img src="pics/rules/insert.png" alt="Insert Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="remove">
-                                <img src="pics/rules/remove.png" alt="Remove Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="serialize">
-                                <img src="pics/rules/serialize.png" alt="Serialize Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="clean">
-                                <img src="pics/rules/clean.png" alt="Clean Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="strip">
-                                <img src="pics/rules/strip.png" alt="Strip Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="case">
-                                <img src="pics/rules/case.png" alt="Case Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="extension">
-                                <img src="pics/rules/extension.png" alt="Extension Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="padding">
-                                <img src="pics/rules/padding.png" alt="Padding Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="delete">
-                                <img src="pics/rules/delete.png" alt="Delete Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="regular">
-                                <img src="pics/rules/regular.png" alt="Regular Expression Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="userinput">
-                                <img src="pics/rules/userinput.png" alt="User Input Rule" loading="lazy">
-                            </div>
-                            <div class="carousel-slide" data-rule="randomize">
-                                <img src="pics/rules/randomize.png" alt="Randomize Rule" loading="lazy">
-                            </div>
-                        </div>
+                <div class="rules-content">
+                    <div class="rules-images-container">
+                        <img src="pics/rules/rules.png" alt="13 Renaming Rules Overview" loading="lazy" onclick="openImageModal(this.src)">
+                        <img src="pics/rules/rulesview.png" alt="Rules Interface View" loading="lazy" onclick="openImageModal(this.src)">
                     </div>
 
-                    <!-- 右箭头 -->
-                    <button class="carousel-arrow carousel-next" aria-label="Next">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- 轮播指示器 -->
-                <div class="carousel-indicators"></div>
-
-                <!-- 独立的文字描述区 -->
-                <div class="rules-text-area">
-                    <div class="rule-details">
-                        <div class="detail-header">
-                            <h2 id="rule-title-zh" data-lang="zh">替换</h2>
-                            <h2 id="rule-title-en" data-lang="en">Replace</h2>
-                            <span class="detail-number">01/13</span>
-                        </div>
-                        <p id="rule-desc-zh" data-lang="zh">支持精确替换和模糊替换两种模式。精确替换要求完全匹配才进行替换；模糊替换则不区分大小写，能灵活匹配不同书写形式。可选择替换首个匹配项或全部匹配项，还支持反向功能，将替换内容变回原始内容。提供大小写匹配选项，确保替换结果的大小写与原始文本保持一致。</p>
-                        <p id="rule-desc-en" data-lang="en">Supports both exact and fuzzy replacement modes. Exact replacement requires complete matching; fuzzy replacement is case-insensitive and can flexibly match different writing forms. You can choose to replace the first match or all matches, and it supports reverse functionality to change replacement content back to original. Provides case matching options to ensure the case of replacement results is consistent with the original text.</p>
+                    <div class="rules-text">
+                        <h2 data-lang="zh">13种专业重命名规则</h2>
+                        <h2 data-lang="en">13 Professional Renaming Rules</h2>
+                        
+                        <p data-lang="zh">Lightning Renamer 精心打造了13种功能强大的重命名规则，涵盖文件管理的方方面面。从基础的文本替换、插入、删除，到专业的序列化编号、大小写转换、扩展名修改；从实用的清理空白、去除字符、长度填充，到高级的正则表达式匹配、用户自定义输入、随机化处理，每一种规则都经过精心设计，确保简单易用的同时提供强大的功能。</p>
+                        <p data-lang="en">Lightning Renamer features 13 powerful renaming rules covering every aspect of file management. From basic text replacement, insertion, and deletion, to professional serialization numbering, case conversion, and extension modification; from practical whitespace cleaning, character stripping, and padding, to advanced regular expression matching, custom user input, and randomization. Each rule is carefully designed to ensure ease of use while delivering powerful functionality.</p>
+                        
+                        <p data-lang="zh">这些规则支持无限组合使用，并可通过直观的拖拽操作自由调整执行顺序。配合实时预览功能，您可以在应用前清晰看到每一步操作的结果，避免误操作。更强大的是，每条规则都支持"作用域"设置，让您能够精准控制规则应用的目标文件范围，实现真正意义上的灵活精准控制。无论是日常的简单整理，还是复杂场景下的批量处理，Lightning Renamer 都能游刃有余地完成任务。</p>
+                        <p data-lang="en">These rules support unlimited combinations and can be freely reordered through intuitive drag-and-drop operations. With real-time preview functionality, you can clearly see the results of each operation before applying changes, preventing errors. Even more powerful is that each rule supports "scope" settings, allowing precise control over which files the rule applies to, achieving true flexible and precise control. Whether for simple daily organization or complex batch processing scenarios, Lightning Renamer handles tasks with ease.</p>
                     </div>
                 </div>
             </section>
@@ -1977,33 +1728,11 @@
             <!-- 智能筛选功能介绍 -->
             <section class="filter-feature">
                 <div class="filter-content">
-                    <!-- 左侧图片预览（带箭头） -->
                     <div class="filter-image-wrapper">
-                        <!-- 左箭头 -->
-                        <button class="filter-arrow filter-prev" aria-label="Previous">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-
-                        <div class="filter-image">
-                            <div class="preview-item active" data-index="0">
-                                <img src="pics/filter/filter.png" alt="Basic Filter" loading="lazy" onclick="openImageModal(this.src)">
-                            </div>
-                            <div class="preview-item" data-index="1">
-                                <img src="pics/filter/advancedfilter.png" alt="Advanced Filter" loading="lazy" onclick="openImageModal(this.src)">
-                            </div>
-                        </div>
-
-                        <!-- 右箭头 -->
-                        <button class="filter-arrow filter-next" aria-label="Next">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
+                        <img src="pics/filter/filter.png" alt="Basic Filter" loading="lazy" onclick="openImageModal(this.src)">
+                        <img src="pics/filter/advancedfilter.png" alt="Advanced Filter" loading="lazy" onclick="openImageModal(this.src)">
                     </div>
 
-                    <!-- 右侧文字内容 -->
                     <div class="filter-text">
                         <h2 data-lang="zh">智能筛选系统</h2>
                         <h2 data-lang="en">Intelligent Filtering System</h2>
@@ -2011,7 +1740,6 @@
                         <p class="intro" data-lang="zh">多维度精确定位，海量文件从容管理。支持9大筛选类型的自由组合，通过与/或逻辑关系和分组功能构建复杂筛选条件，配合快速文本搜索和预设筛选方案，无论文件数量多少，都能快速找到目标文件。</p>
                         <p class="intro" data-lang="en">Multi-dimensional precision targeting for effortless management of massive file collections. Supports flexible combination of 9 major filter types through AND/OR logic relationships and grouping functions. Combined with quick text search and preset filter schemes, quickly locate target files regardless of quantity.</p>
 
-                        <!-- 文字描述 -->
                         <div class="filter-description">
                             <div class="description-item">
                                 <h3 data-lang="zh">
@@ -2057,36 +1785,12 @@
             <!-- 元数据面板介绍 -->
             <section class="metadata-feature">
                 <div class="metadata-content">
-                    <!-- 左侧图片预览（带箭头） -->
                     <div class="metadata-image-wrapper">
-                        <!-- 左箭头 -->
-                        <button class="metadata-arrow metadata-prev" aria-label="Previous">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-
-                        <div class="metadata-image">
-                            <div class="preview-item active" data-index="0">
-                                <img src="pics/metadata/metadata_audio.png" alt="Audio Metadata" loading="lazy" onclick="openImageModal(this.src)">
-                            </div>
-                            <div class="preview-item" data-index="1">
-                                <img src="pics/metadata/metadata_video.png" alt="Video Metadata" loading="lazy" onclick="openImageModal(this.src)">
-                            </div>
-                            <div class="preview-item" data-index="2">
-                                <img src="pics/metadata/metadata_photo.png" alt="Photo Metadata" loading="lazy" onclick="openImageModal(this.src)">
-                            </div>
-                        </div>
-
-                        <!-- 右箭头 -->
-                        <button class="metadata-arrow metadata-next" aria-label="Next">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
+                        <img src="pics/metadata/metadata_audio.png" alt="Audio Metadata" loading="lazy" onclick="openImageModal(this.src)">
+                        <img src="pics/metadata/metadata_video.png" alt="Video Metadata" loading="lazy" onclick="openImageModal(this.src)">
+                        <img src="pics/metadata/metadata_photo.png" alt="Photo Metadata" loading="lazy" onclick="openImageModal(this.src)">
                     </div>
 
-                    <!-- 右侧文字内容 -->
                     <div class="metadata-text">
                         <h2 data-lang="zh">强大的元数据面板</h2>
                         <h2 data-lang="en">Powerful Metadata Panel</h2>
@@ -2094,7 +1798,6 @@
                         <p class="intro" data-lang="zh">强大的文件信息中心与编辑器。选择任意文件，其丰富的元数据立即呈现并支持实时编辑。支持多种文件类型的专业元数据提取和管理，直接复制元数据信息应用到重命名规则，使文件整理更加精准高效。</p>
                         <p class="intro" data-lang="en">A powerful file information center and editor. Select any file to instantly view its rich metadata with real-time editing support. Supports professional metadata extraction and management for multiple file types, allowing direct copying of metadata to renaming rules for more precise file organization.</p>
 
-                        <!-- 文字描述 -->
                         <div class="metadata-description">
                             <div class="description-item">
                                 <h3 data-lang="zh">
@@ -2158,33 +1861,11 @@
             <!-- 布局切换功能介绍 -->
             <section class="layout-feature">
                 <div class="layout-content">
-                    <!-- 左侧图片预览（带箭头） -->
                     <div class="layout-image-wrapper">
-                        <!-- 左箭头 -->
-                        <button class="layout-arrow layout-prev" aria-label="Previous">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-
-                        <div class="layout-image">
-                            <div class="preview-item active" data-index="0">
-                                <img src="pics/layout/vertical.png" alt="Vertical Layout" loading="lazy" onclick="openImageModal(this.src)">
-                            </div>
-                            <div class="preview-item" data-index="1">
-                                <img src="pics/layout/horizontal.png" alt="Horizontal Layout" loading="lazy" onclick="openImageModal(this.src)">
-                            </div>
-                        </div>
-
-                        <!-- 右箭头 -->
-                        <button class="layout-arrow layout-next" aria-label="Next">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
+                        <img src="pics/layout/vertical.png" alt="Vertical Layout" loading="lazy" onclick="openImageModal(this.src)">
+                        <img src="pics/layout/horizontal.png" alt="Horizontal Layout" loading="lazy" onclick="openImageModal(this.src)">
                     </div>
 
-                    <!-- 右侧文字内容 -->
                     <div class="layout-text">
                         <h2 data-lang="zh">灵活的布局切换</h2>
                         <h2 data-lang="en">Flexible Layout Switching</h2>
