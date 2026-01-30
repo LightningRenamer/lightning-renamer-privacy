@@ -1,2063 +1,794 @@
 <!DOCTYPE html>
 <html lang="zh">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Lightning Renamer - 智能文件重命名工具</title>
-        <style>
-            :root {
-                --background-color: #0f172a;
-                --text-color: #e2e8f0;
-                --header-background: rgba(30, 41, 59, 0.9);
-                --card-background: #1e293b;
-                --shadow-color: rgba(0, 0, 0, 0.4);
-                --primary-color: #818cf8;
-                --primary-dark: #6366f1;
-                --primary-light: #a5b4fc;
-                --accent-color: #f472b6;
-                --accent-light: #fb7185;
-                --secondary-color: #94a3b8;
-                --hover-color: #334155;
-                --button-background: #334155;
-                --border-color: #334155;
-                --heading-color: #f1f5f9;
-                --footer-background: #1e293b;
-                --content-max-width: 1200px;
-                --heading-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-                --card-hover-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
-                --gradient-start: #6366f1;
-                --gradient-end: #ec4899;
-            }
 
-            html {
-                background-color: #0f172a;
-            }
-
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                line-height: 1.7;
-                color: var(--text-color);
-                background: var(--background-color);
-                transition: background-color 0.4s ease, color 0.4s ease;
-                text-rendering: optimizeLegibility;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                overflow-x: hidden;
-                position: relative;
-            }
-
-            /* 背景网格 */
-            body::before {
-                content: '';
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-image: 
-                    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
-                background-size: 60px 60px;
-                pointer-events: none;
-                z-index: 0;
-            }
-
-            /* 浮动光晕 */
-            body::after {
-                content: '';
-                position: fixed;
-                top: -50%;
-                right: -25%;
-                width: 100%;
-                height: 100%;
-                background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-                animation: float 20s ease-in-out infinite;
-                pointer-events: none;
-                z-index: 0;
-            }
-
-            /* 装饰性几何图形 */
-            .geometric-bg {
-                position: fixed;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                pointer-events: none;
-                z-index: 0;
-                overflow: hidden;
-            }
-
-
-            /* 点状装饰 */
-            @supports (mask-image: radial-gradient(circle, black, transparent)) {
-                .geometric-bg {
-                    background-image: radial-gradient(circle, rgba(129, 140, 248, 0.08) 1px, transparent 1px);
-                    background-size: 40px 40px;
-                    background-position: 0 0, 20px 20px;
-                }
-            }
-
-            /* 光线装饰 */
-            .light-rays {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 800px;
-                height: 800px;
-                margin: -400px 0 0 -400px;
-                background: conic-gradient(
-                    from 0deg,
-                    transparent 0deg,
-                    rgba(129, 140, 248, 0.03) 10deg,
-                    transparent 20deg,
-                    transparent 40deg,
-                    rgba(244, 114, 182, 0.03) 50deg,
-                    transparent 60deg,
-                    transparent 80deg,
-                    rgba(129, 140, 248, 0.03) 90deg,
-                    transparent 100deg
-                );
-                animation: rotateRays 60s linear infinite;
-                opacity: 0.6;
-            }
-
-            /* 浮动粒子效果 */
-            .floating-particles {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-image: 
-                    radial-gradient(2px 2px at 20% 30%, rgba(129, 140, 248, 0.4), transparent),
-                    radial-gradient(2px 2px at 60% 70%, rgba(244, 114, 182, 0.4), transparent),
-                    radial-gradient(1px 1px at 50% 50%, rgba(129, 140, 248, 0.3), transparent),
-                    radial-gradient(1px 1px at 80% 10%, rgba(244, 114, 182, 0.3), transparent),
-                    radial-gradient(2px 2px at 90% 60%, rgba(129, 140, 248, 0.4), transparent),
-                    radial-gradient(1px 1px at 30% 80%, rgba(244, 114, 182, 0.3), transparent);
-                background-size: 200% 200%;
-                background-position: 0% 0%;
-                animation: particleFloat 40s ease-in-out infinite;
-            }
-
-            /* 抽象形状 */
-            .abstract-shape {
-                position: absolute;
-                background: linear-gradient(135deg, rgba(129, 140, 248, 0.06), rgba(244, 114, 182, 0.06));
-                filter: blur(40px);
-                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-                animation: morphShape 15s ease-in-out infinite;
-            }
-
-            .shape-1 {
-                top: 20%;
-                right: 15%;
-                width: 300px;
-                height: 300px;
-                animation-delay: 0s;
-            }
-
-            .shape-2 {
-                bottom: 25%;
-                left: 10%;
-                width: 250px;
-                height: 250px;
-                animation-delay: 5s;
-            }
-
-            .shape-3 {
-                top: 60%;
-                right: 25%;
-                width: 200px;
-                height: 200px;
-                animation-delay: 10s;
-            }
-
-            @keyframes float {
-                0%, 100% { transform: translate(0, 0) rotate(0deg); }
-                33% { transform: translate(30px, -30px) rotate(120deg); }
-                66% { transform: translate(-20px, 20px) rotate(240deg); }
-            }
-
-            @keyframes morphing {
-                0%, 100% { 
-                    transform: rotate(0deg) scale(1);
-                    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-                }
-                25% { 
-                    transform: rotate(10deg) scale(1.05);
-                    clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
-                }
-                50% { 
-                    transform: rotate(-5deg) scale(0.95);
-                    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-                }
-                75% { 
-                    transform: rotate(15deg) scale(1.1);
-                    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-                }
-            }
-
-            @keyframes rotateRays {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-
-            @keyframes particleFloat {
-                0%, 100% { 
-                    background-position: 0% 0%, 100% 100%, 50% 50%, 80% 20%, 90% 70%, 30% 90%;
-                }
-                25% { 
-                    background-position: 20% 10%, 80% 90%, 60% 40%, 70% 30%, 95% 60%, 25% 85%;
-                }
-                50% { 
-                    background-position: 40% 20%, 60% 80%, 70% 30%, 60% 40%, 85% 65%, 20% 80%;
-                }
-                75% { 
-                    background-position: 30% 15%, 70% 85%, 55% 45%, 75% 25%, 90% 70%, 35% 90%;
-                }
-            }
-
-            @keyframes morphShape {
-                0%, 100% {
-                    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-                    transform: rotate(0deg) scale(1);
-                }
-                25% {
-                    border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
-                    transform: rotate(90deg) scale(1.1);
-                }
-                50% {
-                    border-radius: 50% 50% 50% 50% / 60% 40% 60% 40%;
-                    transform: rotate(180deg) scale(0.9);
-                }
-                75% {
-                    border-radius: 30% 70% 60% 40% / 40% 60% 50% 50%;
-                    transform: rotate(270deg) scale(1.05);
-                }
-            }
-
-            .header {
-                background: var(--header-background);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                box-shadow: 0 1px 3px var(--shadow-color);
-                padding: 1rem;
-                position: fixed;
-                width: 100%;
-                top: 0;
-                z-index: 1000;
-                transition: all 0.3s ease;
-                border-bottom: 1px solid var(--border-color);
-            }
-
-            .nav {
-                max-width: 1200px;
-                margin: 0 auto;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0 1rem;
-            }
-
-            .logo {
-                font-size: 1.5rem;
-                font-weight: 800;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                text-decoration: none;
-                transition: all 0.3s ease;
-                font-family: var(--heading-font);
-                letter-spacing: -0.025em;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                position: relative;
-            }
-
-            .logo::before {
-                content: '⚡';
-                font-size: 1.5rem;
-                filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
-                animation: pulse 2s ease-in-out infinite;
-            }
-
-            @keyframes pulse {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.1); }
-            }
-
-            .logo:hover {
-                transform: translateY(-2px);
-                filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
-            }
-
-            .nav-links {
-                display: flex;
-                gap: 2rem;
-                align-items: center;
-            }
-
-            .nav-links a {
-                color: var(--secondary-color);
-                text-decoration: none;
-                transition: all 0.3s ease;
-                font-weight: 500;
-                font-size: 0.95rem;
-                position: relative;
-                padding: 0.25rem 0;
-            }
-
-            .nav-links a::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 0;
-                height: 2px;
-                background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-                transition: width 0.3s ease;
-            }
-
-            .nav-links a:hover {
-                color: var(--primary-color);
-            }
-
-            .nav-links a:hover::after {
-                width: 100%;
-            }
-
-            .button {
-                background: var(--button-background);
-                border: 1px solid var(--border-color);
-                padding: 0.5rem 1rem;
-                border-radius: 8px;
-                cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                color: var(--text-color);
-                margin-left: 1rem;
-                font-weight: 500;
-                font-size: 0.9rem;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .button::before {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 0;
-                height: 0;
-                border-radius: 50%;
-                background: var(--primary-color);
-                opacity: 0.1;
-                transform: translate(-50%, -50%);
-                transition: width 0.6s, height 0.6s;
-            }
-
-            .button:hover::before {
-                width: 300px;
-                height: 300px;
-            }
-
-            .button:hover {
-                background: var(--hover-color);
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px var(--shadow-color);
-                border-color: var(--primary-light);
-            }
-
-
-            .main {
-                max-width: var(--content-max-width);
-                margin: 6rem auto 2rem;
-                padding: 0 2rem;
-                position: relative;
-                z-index: 1;
-            }
-
-            .hero {
-                padding: 6rem 0 4rem;
-                animation: fadeInUp 1s ease-out;
-            }
-
-            .hero-content {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
-                align-items: center;
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-
-            .hero-image {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                order: 1;
-            }
-
-            .hero-image img {
-                width: 100%;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-                transition: transform 0.4s ease, box-shadow 0.4s ease;
-                cursor: pointer;
-            }
-
-            .hero-image img:hover {
-                transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
-            }
-
-            .hero-text {
-                order: 2;
-            }
-
-            .hero-text h1 {
-                font-size: 2.5rem;
-                font-weight: 800;
-                margin-bottom: 1.5rem;
-                line-height: 1.2;
-            }
-
-            .hero-text .tagline {
-                font-size: 1.25rem;
-                color: var(--primary-color);
-                font-weight: 600;
-                margin-bottom: 1.5rem;
-                line-height: 1.6;
-            }
-
-            .hero-text .description {
-                font-size: 1.05rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                margin-bottom: 2rem;
-            }
-
-            @media (max-width: 968px) {
-                .hero-content {
-                    grid-template-columns: 1fr;
-                    gap: 3rem;
-                }
-
-                .hero-image {
-                    order: 2;
-                }
-
-                .hero-text {
-                    order: 1;
-                    text-align: center;
-                }
-
-                .hero-text h1 {
-                    font-size: 2rem;
-                }
-
-                .hero-text .tagline {
-                    font-size: 1.1rem;
-                }
-
-                .hero-text .description {
-                    font-size: 1rem;
-                }
-            }
-
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .cta-buttons {
-                display: flex;
-                gap: 1rem;
-                justify-content: center;
-                flex-wrap: wrap;
-                margin-top: 2rem;
-                animation: fadeInUp 1s ease-out 0.6s both;
-            }
-
-            .cta-button {
-                padding: 1rem 2.5rem;
-                border-radius: 12px;
-                font-weight: 600;
-                font-size: 1.1rem;
-                cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                position: relative;
-                overflow: hidden;
-                border: none;
-                font-family: var(--heading-font);
-                letter-spacing: -0.01em;
-                min-width: 160px;
-            }
-
-            .cta-button.primary {
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                color: white;
-                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-            }
-
-            .cta-button.secondary {
-                background: transparent;
-                color: var(--primary-color);
-                border: 2px solid var(--primary-color);
-            }
-
-            .cta-button::before {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 0;
-                height: 0;
-                border-radius: 50%;
-                transition: width 0.6s, height 0.6s;
-                transform: translate(-50%, -50%);
-                z-index: 0;
-            }
-
-            .cta-button.primary::before {
-                background: rgba(255, 255, 255, 0.2);
-            }
-
-            .cta-button.secondary::before {
-                background: var(--primary-color);
-                opacity: 0.1;
-            }
-
-            .cta-button:hover::before {
-                width: 300px;
-                height: 300px;
-            }
-
-            .cta-button:hover {
-                transform: translateY(-3px);
-            }
-
-            .cta-button.primary:hover {
-                box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
-            }
-
-            .cta-button.secondary:hover {
-                background: var(--primary-color);
-                color: white;
-                border-color: var(--primary-color);
-                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-            }
-
-            .cta-button span {
-                position: relative;
-                z-index: 1;
-            }
-
-            /* 规则展示 - 简洁模式 */
-            .rules-integrated {
-                padding: 6rem 2rem;
-            }
-
-            .rules-content {
-                max-width: 1400px;
-                margin: 0 auto;
-            }
-
-            .rules-images-container {
-                max-width: 1200px;
-                margin: 0 auto 3rem;
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 2rem;
-            }
-
-            .rules-images-container img {
-                width: 100%;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                cursor: zoom-in;
-            }
-
-            .rules-images-container img:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
-            }
-
-            .rules-text {
-                text-align: left;
-            }
-
-            .rules-text h2 {
-                font-size: 2.25rem;
-                font-weight: 800;
-                margin-bottom: 1.5rem;
-                line-height: 1.2;
-                color: var(--heading-color);
-                font-family: var(--heading-font);
-                letter-spacing: -0.02em;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .rules-text p {
-                font-size: 1.05rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                margin-bottom: 1.5rem;
-                opacity: 0.9;
-            }
-
-            .rules-text p:last-child {
-                margin-bottom: 0;
-            }
-
-            .rules-section-title {
-                text-align: center;
-                margin-bottom: 4rem;
-            }
-
-            .rules-section-title h2 {
-                font-size: 2.5rem;
-                font-weight: 800;
-                color: var(--heading-color);
-                font-family: var(--heading-font);
-                letter-spacing: -0.02em;
-                margin-bottom: 1rem;
-                background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .rules-section-title p {
-                font-size: 1.15rem;
-                color: var(--secondary-color);
-                max-width: 800px;
-                margin: 0 auto;
-                line-height: 1.7;
-            }
-
-
-            /* 独立的文字描述区 */
-            .rules-text-area {
-                max-width: 900px;
-                margin: 0 auto;
-                padding: 3rem;
-                background: var(--card-background);
-                border-radius: 16px;
-                box-shadow: 0 8px 32px var(--shadow-color);
-                border: 1px solid var(--border-color);
-            }
-
-            .rules-text-area .rule-details {
-                animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-
-            .rules-text-area h3 {
-                font-size: 1.75rem;
-                font-weight: 700;
-                color: var(--heading-color);
-                margin-bottom: 1.5rem;
-                margin-top: 0;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .rule-details {
-                width: 100%;
-                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-
-            .rule-details.content-fade-out {
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lightning Renamer - 智能文件重命名工具</title>
+    <style>
+        :root {
+            --bg-body: #ffffff;
+            --bg-section: #f5f5f7;
+            --text-heading: #1d1d1f;
+            --text-body: #424245;
+            /* Slightly darker for better readability of long text */
+            --accent-color: #0071e3;
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --border-color: #d2d2d7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-heading);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            /* Increased line height for better readability of long text */
+            letter-spacing: -0.012em;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 48px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 999;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-content {
+            width: 100%;
+            max-width: 980px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--text-heading);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a,
+        .lang-btn {
+            font-size: 12px;
+            color: #666;
+            text-decoration: none;
+            margin-left: 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .lang-btn:hover {
+            color: var(--text-heading);
+        }
+
+        /* General Layout */
+        .section {
+            padding: 100px 0;
+            overflow: hidden;
+        }
+
+        .section.alt-bg {
+            background-color: var(--bg-section);
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 56px;
+            line-height: 1.07143;
+            font-weight: 700;
+            letter-spacing: -0.005em;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 40px;
+            line-height: 1.1;
+            font-weight: 600;
+            letter-spacing: 0em;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 24px;
+            line-height: 1.2;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 17px;
+            line-height: 1.5;
+            font-weight: 400;
+            color: var(--text-body);
+            margin-bottom: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-max-800 {
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Hero */
+        .hero {
+            padding-top: 150px;
+            padding-bottom: 60px;
+            text-align: center;
+        }
+
+        .hero-image-container {
+            margin-top: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .hero-image-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
 
-            .rule-details.content-fade-in {
+            to {
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
 
-            .detail-header h2 {
-                font-size: 2.25rem;
-                font-weight: 800;
-                color: var(--heading-color);
-                margin: 0;
-                font-family: var(--heading-font);
-                letter-spacing: -0.04em;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
+        .hero,
+        .section,
+        footer {
+            opacity: 0;
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hero {
+            animation-delay: 0.1s;
+        }
+
+        .section:nth-of-type(2) {
+            animation-delay: 0.2s;
+        }
+
+        .section:nth-of-type(3) {
+            animation-delay: 0.3s;
+        }
+
+        .section:nth-of-type(4) {
+            animation-delay: 0.4s;
+        }
+
+        .section:nth-of-type(5) {
+            animation-delay: 0.5s;
+        }
+
+        footer {
+            animation-delay: 0.6s;
+        }
+
+        /* App Store Button */
+        .app-store-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #000;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .app-store-button:hover {
+            transform: translateY(-2px);
+            background-color: #333;
+        }
+
+        .app-store-button svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+
+        .btn-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1;
+        }
+
+        .btn-text .small {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .btn-text .big {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Feature Rows (Left/Right) */
+        .feature-row {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 120px;
+        }
+
+        .feature-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .feature-row.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-image {
+            flex: 1.5;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #fff;
+        }
+
+        /* Metadata & Filter Grids */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .grid-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s;
+        }
+
+        .grid-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .grid-card img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid-card h4 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-heading);
+        }
+
+        .grid-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-body);
+            margin-bottom: 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+            background: #f5f5f7;
+            font-size: 12px;
+            color: #86868b;
+        }
+
+        /* Tabs */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            margin-top: 30px;
+        }
+
+        .tab-btn {
+            background: #f5f5f7;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-body);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background: #e8e8ed;
+            color: var(--text-heading);
+        }
+
+        .tab-btn.active {
+            background: var(--text-heading);
+            color: #fff;
+        }
+
+        .tab-content {
+            display: grid;
+            min-height: 500px;
+            /* Optional min-height */
+        }
+
+        .tab-pane {
+            grid-area: 1 / 1;
+            /* Stack all panes on top of each other */
+            opacity: 0;
+            visibility: hidden;
+            /* Prevent clicking hidden elements */
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            z-index: 1;
+        }
+
+        .tab-pane.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
+        }
+
+        /* Removed keyframes to rely purely on CSS opacity transition for smoothness */
+
+        /* Large Image Highlight */
+        .highlight-image {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+            /* slightly deeper shadow */
+            overflow: hidden;
+            background: #fff;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            cursor: zoom-in;
+        }
+
+        .highlight-image img {
+            width: 100%;
+            display: block;
+            height: auto;
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 40px;
             }
 
-            .rule-details p {
-                font-size: 1.0625rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                margin: 0;
-                opacity: 0.9;
-                word-wrap: break-word;
-                overflow-wrap: break-word;
+            h2 {
+                font-size: 32px;
             }
 
-            .detail-header {
-                display: flex;
-                align-items: center;
-                gap: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .detail-number {
-                display: none;
-            }
-
-            /* 内容切换动画 */
-            .content-fade-transition {
-                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-
-            .content-fade-out {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            .content-fade-in {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            /* 作用域功能介绍 */
-            .scope-feature {
-                padding: 6rem 2rem;
-                background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
-            }
-
-            .scope-content {
-                max-width: 1400px;
-                margin: 0 auto;
-            }
-
-            .scope-image {
-                margin-bottom: 3rem;
-                max-width: 900px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-            .scope-image img {
-                width: 100%;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                cursor: zoom-in;
-            }
-
-            .scope-image img:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
-            }
-
-            /* 图片放大查看 Modal */
-            .image-modal {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.9);
-                z-index: 9999;
-                cursor: zoom-out;
-                animation: fadeIn 0.3s ease;
-            }
-
-            .image-modal.active {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 2rem;
-            }
-
-            .image-modal img {
-                max-width: 100%;
-                max-height: 100%;
-                width: auto;
-                height: auto;
-                border-radius: 8px;
-                box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
-                animation: zoomIn 0.3s ease;
-            }
-
-            .image-modal-close {
-                position: absolute;
-                top: 2rem;
-                right: 2rem;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                border: none;
-                color: white;
-                font-size: 24px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-            }
-
-            .image-modal-close:hover {
-                background: rgba(255, 255, 255, 0.2);
-                transform: scale(1.1);
-            }
-
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-
-            @keyframes zoomIn {
-                from { 
-                    opacity: 0;
-                    transform: scale(0.8);
-                }
-                to { 
-                    opacity: 1;
-                    transform: scale(1);
-                }
-            }
-
-            .scope-text {
+            .feature-row,
+            .feature-row.reverse {
+                flex-direction: column;
+                gap: 40px;
                 text-align: left;
             }
 
-            .scope-text h2 {
-                font-size: 2.25rem;
-                font-weight: 800;
-                margin-bottom: 1.5rem;
-                line-height: 1.2;
-                color: var(--heading-color);
-                font-family: var(--heading-font);
-                letter-spacing: -0.02em;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
+            .grid-3 {
+                grid-template-columns: 1fr;
             }
 
-            .scope-text p {
-                font-size: 1.05rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                margin-bottom: 1.5rem;
-                opacity: 0.9;
-            }
-
-            .scope-text p:last-child {
-                margin-bottom: 0;
-            }
-
-            /* 智能筛选功能介绍 */
-            .filter-feature {
-                padding: 6rem 2rem;
-                background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
-            }
-
-            .filter-content {
-                max-width: 1400px;
-                margin: 0 auto;
-            }
-
-            /* 图片容器 */
-            .filter-image-wrapper {
-                margin-bottom: 3rem;
-                max-width: 1200px;
-                margin-left: auto;
-                margin-right: auto;
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 2rem;
-            }
-
-            .filter-image-wrapper img {
+            .hero-image-container {
                 width: 100%;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                cursor: zoom-in;
             }
-
-            .filter-image-wrapper img:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
-            }
-
-            /* 文字区 */
-            .filter-text {
-                text-align: left;
-            }
-
-            .filter-text h2 {
-                font-size: 2.25rem;
-                font-weight: 800;
-                margin-bottom: 1.5rem;
-                line-height: 1.2;
-                color: var(--heading-color);
-                font-family: var(--heading-font);
-                letter-spacing: -0.02em;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .filter-text .intro {
-                font-size: 1.05rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                margin-bottom: 2rem;
-                opacity: 0.9;
-            }
-
-            /* 文字描述 */
-            .filter-description {
-                display: flex;
-                flex-direction: column;
-                gap: 2rem;
-            }
-
-            /* 布局切换功能介绍 */
-            .layout-feature {
-                padding: 6rem 2rem;
-                background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
-            }
-
-            .layout-content {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
-                align-items: center;
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-
-            .layout-image-wrapper {
-                display: flex;
-                flex-direction: column;
-                gap: 2rem;
-                order: 1;
-            }
-
-            .layout-image-wrapper img {
-                width: 100%;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-                transition: transform 0.4s ease, box-shadow 0.4s ease;
-                cursor: zoom-in;
-            }
-
-            .layout-image-wrapper img:hover {
-                transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
-            }
-
-            .layout-text {
-                order: 2;
-            }
-
-            .layout-text h2 {
-                font-size: 2.25rem;
-                font-weight: 800;
-                margin-bottom: 1.5rem;
-                line-height: 1.2;
-                color: var(--heading-color);
-                font-family: var(--heading-font);
-                letter-spacing: -0.02em;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .layout-text .intro {
-                font-size: 1.05rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                margin-bottom: 2rem;
-                opacity: 0.9;
-            }
-
-            /* 文字描述 */
-            .layout-description {
-                display: flex;
-                flex-direction: column;
-                gap: 2rem;
-            }
-
-            /* 元数据面板介绍 */
-            .metadata-feature {
-                padding: 6rem 2rem;
-                background: linear-gradient(180deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
-            }
-
-            /* 主题切换功能介绍 */
-            .theme-feature {
-                padding: 6rem 2rem;
-                background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 100%);
-            }
-
-            .theme-content {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
-                align-items: center;
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-
-            .theme-image {
-                order: 2;
-            }
-
-            .theme-image img {
-                width: 100%;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-                transition: transform 0.4s ease, box-shadow 0.4s ease;
-                cursor: zoom-in;
-            }
-
-            .theme-image img:hover {
-                transform: translateY(-8px) scale(1.02);
-                box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
-            }
-
-            .theme-text {
-                order: 1;
-            }
-
-            .theme-text h2 {
-                font-size: 2.25rem;
-                font-weight: 800;
-                margin-bottom: 1.5rem;
-                line-height: 1.2;
-                color: var(--heading-color);
-                font-family: var(--heading-font);
-                letter-spacing: -0.02em;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .theme-text p {
-                font-size: 1.05rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                opacity: 0.9;
-            }
-
-            .metadata-content {
-                max-width: 1400px;
-                margin: 0 auto;
-            }
-
-            .metadata-image-wrapper {
-                margin-bottom: 3rem;
-                max-width: 1200px;
-                margin-left: auto;
-                margin-right: auto;
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1.5rem;
-            }
-
-            .metadata-image-wrapper img {
-                width: 100%;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                cursor: zoom-in;
-            }
-
-            .metadata-image-wrapper img:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
-            }
-
-            .metadata-text {
-                text-align: left;
-            }
-
-            .metadata-text h2 {
-                font-size: 2.25rem;
-                font-weight: 800;
-                margin-bottom: 1.5rem;
-                line-height: 1.2;
-                color: var(--heading-color);
-                font-family: var(--heading-font);
-                letter-spacing: -0.02em;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-
-            .metadata-text .intro {
-                font-size: 1.05rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                margin-bottom: 2rem;
-                opacity: 0.9;
-            }
-
-            /* 文字描述 */
-            .metadata-description {
-                display: flex;
-                flex-direction: column;
-                gap: 2rem;
-            }
-
-            .description-item h3 {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 1.35rem;
-                font-weight: 700;
-                margin-bottom: 0.75rem;
-                color: var(--heading-color);
-            }
-
-            .file-type-icon {
-                flex-shrink: 0;
-                color: var(--primary-color);
-            }
-
-            .description-item p {
-                font-size: 1.05rem;
-                line-height: 1.8;
-                color: var(--text-color);
-                opacity: 0.9;
-            }
-
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .features {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-                gap: 2rem;
-                padding: 3rem 0 5rem;
-                animation: fadeInUp 1s ease-out 0.3s both;
-            }
-
-            .feature-card {
-                background: var(--card-background);
-                padding: 3rem 2.5rem;
-                border-radius: 20px;
-                box-shadow: 0 4px 20px var(--shadow-color);
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                border: 1px solid var(--border-color);
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .feature-card::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 4px;
-                background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-                transform: scaleX(0);
-                transform-origin: left;
-                transition: transform 0.4s ease;
-            }
-
-            .feature-card:hover::before {
-                transform: scaleX(1);
-            }
-
-            .feature-card::after {
-                content: '';
-                position: absolute;
-                top: -50%;
-                right: -50%;
-                width: 200%;
-                height: 200%;
-                background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
-                opacity: 0;
-                transition: opacity 0.4s ease;
-            }
-
-            .feature-card:hover::after {
-                opacity: 1;
-            }
-
-            .feature-card:hover {
-                transform: translateY(-12px) scale(1.02);
-                box-shadow: var(--card-hover-shadow);
-                border-color: var(--primary-light);
-            }
-
-            .feature-card h3 {
-                color: var(--heading-color);
-                margin-bottom: 1.25rem;
-                transition: color 0.3s ease;
-                font-size: 1.5rem;
-                font-weight: 700;
-                font-family: var(--heading-font);
-                letter-spacing: -0.02em;
-                position: relative;
-                z-index: 1;
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-            }
-
-            .feature-card h3::before {
-                content: '';
-                display: inline-block;
-                width: 48px;
-                height: 48px;
-                background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-                transition: transform 0.3s ease;
-            }
-
-            .feature-card:nth-child(1) h3::before {
-                content: '⚡';
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.5rem;
-                background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            }
-
-            .feature-card:nth-child(2) h3::before {
-                content: '🎯';
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.5rem;
-                background: linear-gradient(135deg, #ec4899, #f43f5e);
-            }
-
-            .feature-card:nth-child(3) h3::before {
-                content: '🛡️';
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.5rem;
-                background: linear-gradient(135deg, #10b981, #14b8a6);
-            }
-
-            .feature-card:hover h3::before {
-                transform: rotate(10deg) scale(1.1);
-            }
-
-            .feature-card p {
-                color: var(--text-color);
-                transition: color 0.3s ease;
-                line-height: 1.7;
-                flex-grow: 1;
-                font-size: 1.05rem;
-                position: relative;
-                z-index: 1;
-            }
-
-            .footer {
-                text-align: center;
-                padding: 3rem 1rem 2rem;
-                background: linear-gradient(135deg, var(--footer-background) 0%, rgba(99, 102, 241, 0.02) 100%);
-                color: var(--secondary-color);
-                font-size: 0.9rem;
-                border-top: 1px solid var(--border-color);
-                position: relative;
-                margin-top: 4rem;
-            }
-
-            .footer::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 80px;
-                height: 2px;
-                background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-                opacity: 0.6;
-            }
-
-            .footer p {
-                margin: 0;
-                font-weight: 500;
-                opacity: 0.8;
-                transition: opacity 0.3s ease;
-            }
-
-            .footer:hover p {
-                opacity: 1;
-            }
-
-            [data-lang='zh'] {
-                display: none;
-            }
-
-            html.lang-zh [data-lang='en'],
-            html.lang-en [data-lang='zh'] {
-                display: none;
-            }
-
-            html.lang-zh [data-lang='zh'],
-            html.lang-en [data-lang='en'] {
-                display: block;
-            }
-
-            @media (max-width: 768px) {
-                
-                .main {
-                    padding: 0 1.5rem;
-                }
-
-                .hero {
-                    padding: 4rem 0 3rem;
-                }
-
-                .nav {
-                    flex-direction: column;
-                    gap: 1rem;
-                    padding: 0.5rem 1rem;
-                }
-                
-                .nav-links {
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    gap: 1rem;
-                }
-                
-                .button {
-                    margin: 0.25rem 0;
-                    padding: 0.6rem 1rem;
-                }
-                
-                .features {
-                    grid-template-columns: 1fr;
-                    gap: 1.5rem;
-                    padding: 2rem 0 3rem;
-                }
-
-                .feature-card {
-                    padding: 2.5rem 2rem;
-                    border-radius: 16px;
-                }
-
-                .feature-card h3 {
-                    font-size: 1.3rem;
-                    gap: 0.5rem;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    text-align: left;
-                }
-
-                .feature-card h3::before {
-                    width: 40px;
-                    height: 40px;
-                    font-size: 1.2rem;
-                }
-
-                .logo::before {
-                    font-size: 1.3rem;
-                }
-
-                .header {
-                    padding: 0.75rem;
-                }
-
-                /* 轮播图响应式 */
-                .rules-integrated {
-                    padding: 3rem 1rem;
-                }
-
-                .rules-section-title h2 {
-                    font-size: 1.75rem;
-                }
-
-                .rules-section-title p {
-                    font-size: 1rem;
-                    padding: 0 1rem;
-                }
-
-                .rules-section-title {
-                    margin-bottom: 3rem;
-                }
-
-                .rules-images-container {
-                    grid-template-columns: 1fr;
-                    gap: 1.5rem;
-                    padding: 0 1rem;
-                }
-
-                .rules-text-area {
-                    padding: 2rem 1.5rem;
-                    max-width: 100%;
-                    margin: 0 1rem;
-                }
-
-                /* 筛选功能响应式 */
-                .filter-image-wrapper {
-                    grid-template-columns: 1fr;
-                    gap: 1.5rem;
-                    padding: 0 1rem;
-                }
-
-                /* 元数据面板响应式 */
-                .metadata-image-wrapper {
-                    grid-template-columns: 1fr;
-                    gap: 1.5rem;
-                    padding: 0 1rem;
-                }
-
-                /* 作用域功能响应式 */
-                .scope-image {
-                    padding: 0 1rem;
-                }
-
-                .detail-number {
-                    font-size: 0.9375rem;
-                    padding: 0.375rem 0.75rem;
-                }
-
-                .rule-details p {
-                    font-size: 0.9375rem;
-                    line-height: 1.7;
-                }
-
-                /* 作用域功能响应式 */
-                .scope-feature {
-                    padding: 3rem 1rem;
-                }
-
-                .scope-content {
-                    grid-template-columns: 1fr;
-                    gap: 2rem;
-                }
-
-                .scope-image {
-                    order: 1;
-                }
-
-                .scope-text {
-                    order: 2;
-                    text-align: center;
-                }
-
-                .scope-text h2 {
-                    font-size: 1.75rem;
-                }
-
-                .scope-text p {
-                    font-size: 1rem;
-                }
-
-                /* 智能筛选功能响应式 */
-                .filter-feature {
-                    padding: 3rem 1rem;
-                }
-
-                .filter-content {
-                    grid-template-columns: 1fr;
-                    gap: 2rem;
-                }
-
-                .filter-image-wrapper {
-                    order: 1;
-                }
-
-                .filter-text {
-                    order: 2;
-                }
-
-                .filter-text h2 {
-                    font-size: 1.75rem;
-                }
-
-                .filter-text .intro {
-                    font-size: 1rem;
-                }
-
-                .filter-description {
-                    gap: 1.5rem;
-                }
-
-                /* 布局切换功能响应式 */
-                .layout-feature {
-                    padding: 3rem 1rem;
-                }
-
-                .layout-content {
-                    grid-template-columns: 1fr;
-                    gap: 2rem;
-                }
-
-                .layout-image-wrapper {
-                    order: 1;
-                    gap: 1.5rem;
-                }
-
-                .layout-text {
-                    order: 2;
-                }
-
-                .layout-text h2 {
-                    font-size: 1.75rem;
-                }
-
-                .layout-text .intro {
-                    font-size: 1rem;
-                }
-
-                .layout-description {
-                    gap: 1.5rem;
-                }
-
-                /* 元数据面板响应式 */
-                .metadata-feature {
-                    padding: 3rem 1rem;
-                }
-
-                .metadata-content {
-                    grid-template-columns: 1fr;
-                    gap: 2rem;
-                }
-
-                .metadata-image-wrapper {
-                    order: 1;
-                }
-
-                .metadata-text {
-                    order: 2;
-                }
-
-                .metadata-text h2 {
-                    font-size: 1.75rem;
-                }
-
-                .metadata-text .intro {
-                    font-size: 1rem;
-                }
-
-                .metadata-description {
-                    gap: 1.5rem;
-                }
-
-                .description-item h3 {
-                    font-size: 1.25rem;
-                }
-
-                .description-item p {
-                    font-size: 1rem;
-                }
-
-                /* 主题切换功能响应式 */
-                .theme-feature {
-                    padding: 3rem 1rem;
-                }
-
-                .theme-content {
-                    grid-template-columns: 1fr;
-                    gap: 2rem;
-                }
-
-                .theme-image {
-                    order: 1;
-                }
-
-                .theme-text {
-                    order: 2;
-                    text-align: center;
-                }
-
-                .theme-text h2 {
-                    font-size: 1.75rem;
-                }
-
-                .theme-text p {
-                    font-size: 1rem;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <!-- 装饰性背景 -->
-        <div class="geometric-bg">
-            <div class="light-rays"></div>
-            <div class="floating-particles"></div>
-            <div class="abstract-shape shape-1"></div>
-            <div class="abstract-shape shape-2"></div>
-            <div class="abstract-shape shape-3"></div>
+        }
+
+        /* Utils */
+        [data-lang='zh'] {
+            display: none;
+        }
+
+        html.tag-zh [data-lang='en'] {
+            display: none;
+        }
+
+        html.tag-zh [data-lang='zh'] {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="tag-zh">
+
+    <header>
+        <div class="nav-content">
+            <a href="#" class="logo">Lightning Renamer</a>
+            <div class="nav-links">
+                <a href="privacy.html" data-lang="zh">隐私政策</a>
+                <a href="privacy.html" data-lang="en">Privacy</a>
+                <a href="terms.html" data-lang="zh">用户协议</a>
+                <a href="terms.html" data-lang="en">Terms</a>
+                <button class="lang-btn" onclick="toggleLanguage()">EN/中文</button>
+            </div>
         </div>
-        
-        <header class="header">
-            <nav class="nav">
-                <a href="index.html" class="logo">
-                    <span>Lightning Renamer</span>
-                </a>
-                <div class="nav-links">
-                    <a href="privacy.html" data-lang="zh">隐私政策</a>
-                    <a href="privacy.html" data-lang="en">Privacy Policy</a>
-                    <a href="terms.html" data-lang="zh">用户协议</a>
-                    <a href="terms.html" data-lang="en">Terms of Service</a>
-                    <button class="button language-switch" onclick="toggleLanguage()">EN/中文</button>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero section">
+        <div class="container">
+            <h1 data-lang="zh">Lightning Renamer</h1>
+            <h1 data-lang="en">Lightning Renamer</h1>
+
+            <p class="text-max-800" data-lang="zh">告别繁琐，一键掌控！Lightning Renamer
+                是您管理海量文件的高效解决方案，以其高度的灵活性和强大的功能，让文件重命名变得简单、智能、高效。</p>
+            <p class="text-max-800" data-lang="en">Simplify file management with one powerful tool! Lightning Renamer
+                offers an efficient solution for organizing your files with flexibility, intelligence, and speed.</p>
+
+            <p class="text-max-800" data-lang="zh" style="margin-top: -10px; font-size: 105%;">Lightning Renamer 是一款专为
+                Mac
+                用户打造的专业级批量重命名工具。无论您是摄影师、设计师还是普通用户，面对成百上千的文件，它都能轻松应对。内置14种功能各异的重命名规则，支持无限组合、拖拽排序、文件名称实时预览，更有丰富的元数据支持和创新的"规则作用域"功能，将复杂的文件整理工作化繁为简。
+            </p>
+            <p class="text-max-800" data-lang="en" style="margin-top: -10px; font-size: 105%;">Lightning Renamer is a
+                professional batch renaming tool designed specifically for Mac users. Whether you're a photographer,
+                designer, or everyday user dealing with hundreds of files, this app handles it all with ease. With 14
+                versatile renaming rules, unlimited combinations, drag-and-drop reordering, and real-time previews, plus
+                extensive metadata support and the innovative "rule scope" feature, Lightning Renamer transforms complex
+                file organization into a simple task.</p>
+
+            <a href="#" class="app-store-button" target="_blank">
+                <svg viewBox="0 0 384 512" fill="white">
+                    <path
+                        d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z" />
+                </svg>
+                <div class="btn-text">
+                    <span class="small" data-lang="zh">下载于</span>
+                    <span class="small" data-lang="en">Download on the</span>
+                    <span class="big">Mac App Store</span>
                 </div>
-            </nav>
-        </header>
+            </a>
 
-        <main class="main">
-            <section class="hero">
-                <div class="hero-content">
-                    <!-- 左侧软件截图 -->
-                    <div class="hero-image">
-                        <img src="pics/mainview.png" alt="Lightning Renamer Interface" loading="lazy" onclick="openImageModal(this.src)">
-                    </div>
-
-                    <!-- 右侧应用描述 -->
-                    <div class="hero-text">
-                        <h1 data-lang="zh">Lightning Renamer</h1>
-                        <h1 data-lang="en">Lightning Renamer</h1>
-                        
-                        <p class="tagline" data-lang="zh">告别繁琐，一键掌控！Lightning Renamer 是您管理海量文件的高效解决方案，以其高度的灵活性和强大的功能，让文件重命名变得简单、智能、高效。</p>
-                        <p class="tagline" data-lang="en">Simplify file management with one powerful tool! Lightning Renamer offers an efficient solution for organizing your files with flexibility, intelligence, and speed.</p>
-                        
-                        <p class="description" data-lang="zh">Lightning Renamer 是一款专为 Mac 用户打造的专业级批量重命名工具。无论您是摄影师、设计师还是普通用户，面对成百上千的文件，它都能轻松应对。内置13种功能各异的重命名规则，支持无限组合、拖拽排序、文件名称实时预览，更有丰富的元数据支持和创新的"规则作用域"功能，将复杂的文件整理工作化繁为简。</p>
-                        <p class="description" data-lang="en">Lightning Renamer is a professional batch renaming tool designed specifically for Mac users. Whether you're a photographer, designer, or everyday user dealing with hundreds of files, this app handles it all with ease. With 13 versatile renaming rules, unlimited combinations, drag-and-drop reordering, and real-time previews, plus extensive metadata support and the innovative "rule scope" feature, Lightning Renamer transforms complex file organization into a simple task.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 集成式规则展示 -->
-            <section class="rules-integrated">
-                <div class="rules-content">
-                    <div class="rules-images-container">
-                        <img src="pics/rules/rules.png" alt="13 Renaming Rules Overview" loading="lazy" onclick="openImageModal(this.src)">
-                        <img src="pics/rules/rulesview.png" alt="Rules Interface View" loading="lazy" onclick="openImageModal(this.src)">
-                    </div>
-
-                    <div class="rules-text">
-                        <h2 data-lang="zh">13种专业重命名规则</h2>
-                        <h2 data-lang="en">13 Professional Renaming Rules</h2>
-                        
-                        <p data-lang="zh">Lightning Renamer 精心打造了13种功能强大的重命名规则，涵盖文件管理的方方面面。从基础的文本替换、插入、删除，到专业的序列化编号、大小写转换、扩展名修改；从实用的清理空白、去除字符、长度填充，到高级的正则表达式匹配、用户自定义输入、随机化处理，每一种规则都经过精心设计，确保简单易用的同时提供强大的功能。</p>
-                        <p data-lang="en">Lightning Renamer features 13 powerful renaming rules covering every aspect of file management. From basic text replacement, insertion, and deletion, to professional serialization numbering, case conversion, and extension modification; from practical whitespace cleaning, character stripping, and padding, to advanced regular expression matching, custom user input, and randomization. Each rule is carefully designed to ensure ease of use while delivering powerful functionality.</p>
-                        
-                        <p data-lang="zh">这些规则支持无限组合使用，并可通过直观的拖拽操作自由调整执行顺序。配合实时预览功能，您可以在应用前清晰看到每一步操作的结果，避免误操作。更强大的是，每条规则都支持"作用域"设置，让您能够精准控制规则应用的目标文件范围，实现真正意义上的灵活精准控制。无论是日常的简单整理，还是复杂场景下的批量处理，Lightning Renamer 都能游刃有余地完成任务。</p>
-                        <p data-lang="en">These rules support unlimited combinations and can be freely reordered through intuitive drag-and-drop operations. With real-time preview functionality, you can clearly see the results of each operation before applying changes, preventing errors. Even more powerful is that each rule supports "scope" settings, allowing precise control over which files the rule applies to, achieving true flexible and precise control. Whether for simple daily organization or complex batch processing scenarios, Lightning Renamer handles tasks with ease.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 作用域功能介绍 -->
-            <section class="scope-feature">
-                <div class="scope-content">
-                    <!-- 左侧截图 -->
-                    <div class="scope-image">
-                        <img src="pics/rules/scope.png" alt="Rule Scope Feature" loading="lazy" onclick="openImageModal(this.src)">
-                    </div>
-
-                    <!-- 右侧文字描述 -->
-                    <div class="scope-text">
-                        <h2 data-lang="zh">手术刀般精准的"规则作用域"功能</h2>
-                        <h2 data-lang="en">Surgical Precision with "Rule Scope"</h2>
-                        
-                        <p data-lang="zh">如同外科手术刀般精准，规则作用域让您能够将每条规则精确定位到指定文件，在复杂场景下实现极致的重命名控制。当您面对一个混杂着图片、视频和文档的文件夹时，您可以创建一条规则专门作用于所有.jpg文件，另一条规则只作用于文件名包含"报告"的文档，而第三条规则则应用到其余所有文件上。</p>
-                        <p data-lang="en">Like a surgeon's scalpel, Rule Scope enables you to precisely target each rule to specific files, achieving ultimate renaming control in complex scenarios. When facing a folder with a mix of images, videos, and documents, you can create one rule specifically for all .jpg files, another rule only for files with "report" in their names, and a third rule for all remaining files.</p>
-                        
-                        <p data-lang="zh">作用域功能与文件筛选功能完美结合，允许您先用筛选器快速定位特定文件群组（如某个时间段创建的文件、特定大小范围的文件或特定扩展名的文件），然后为这些筛选后的文件单独设置规则，实现多层次、多条件的精准文件处理。这种手术刀般的精细控制力，让您在最复杂的场景下也能游刃有余。</p>
-                        <p data-lang="en">The scope feature works perfectly with the file filtering function, allowing you to first use filters to quickly locate specific file groups (such as files created within a specific timeframe, files of a certain size range, or files with specific extensions), and then set separate rules for these filtered files, achieving multi-level, multi-condition precise file processing. This surgical precision control lets you handle even the most complex scenarios with ease.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 智能筛选功能介绍 -->
-            <section class="filter-feature">
-                <div class="filter-content">
-                    <div class="filter-image-wrapper">
-                        <img src="pics/filter/filter.png" alt="Basic Filter" loading="lazy" onclick="openImageModal(this.src)">
-                        <img src="pics/filter/advancedfilter.png" alt="Advanced Filter" loading="lazy" onclick="openImageModal(this.src)">
-                    </div>
-
-                    <div class="filter-text">
-                        <h2 data-lang="zh">智能筛选系统</h2>
-                        <h2 data-lang="en">Intelligent Filtering System</h2>
-                        
-                        <p class="intro" data-lang="zh">多维度精确定位，海量文件从容管理。支持9大筛选类型的自由组合，通过与/或逻辑关系和分组功能构建复杂筛选条件，配合快速文本搜索和预设筛选方案，无论文件数量多少，都能快速找到目标文件。</p>
-                        <p class="intro" data-lang="en">Multi-dimensional precision targeting for effortless management of massive file collections. Supports flexible combination of 9 major filter types through AND/OR logic relationships and grouping functions. Combined with quick text search and preset filter schemes, quickly locate target files regardless of quantity.</p>
-
-                        <div class="filter-description">
-                            <div class="description-item">
-                                <h3 data-lang="zh">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M3 6h18M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    基础筛选
-                                </h3>
-                                <h3 data-lang="en">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M3 6h18M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    Basic Filtering
-                                </h3>
-                                <p data-lang="zh">提供9大核心筛选维度：文件名、新文件名、文件状态、文件类型、文件大小、修改日期、创建日期、参与状态和名称长度。每个维度都提供专门的比较运算符和匹配选项，如文本包含匹配、日期的范围选择、大小的区间设定等。内置快速文本搜索框，实时过滤文件列表；预设条件筛选提供常用筛选方案一键应用，大幅提升工作效率。</p>
-                                <p data-lang="en">Offers 9 core filtering dimensions: File Name, New File Name, File Status, Kind, File Size, Modification Date, Creation Date, Participation Status, and Name Length. Each dimension provides specialized comparison operators and matching options, such as text contains matching, date range selection, and size interval settings. Built-in quick text search box for real-time file list filtering; preset condition filters provide one-click application of common filter schemes, significantly boosting work efficiency.</p>
-                            </div>
-                            <div class="description-item">
-                                <h3 data-lang="zh">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M10 7v3m0 3h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    高级筛选
-                                </h3>
-                                <h3 data-lang="en">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M10 7v3m0 3h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    Advanced Filtering
-                                </h3>
-                                <p data-lang="zh">突破单一条件限制，构建专业级复杂筛选逻辑。支持多层级的条件分组，每个分组可独立设置与（AND）或或（OR）逻辑关系；分组内可嵌套子分组，实现诸如"（文件大小大于10MB 且 格式为JPG）或（创建于最近7天 且 名称包含'项目'）"这样的多维度组合条件。提供可视化的条件树状结构，清晰展示筛选逻辑；支持对已保存的高级筛选条件进行再编辑和优化，让复杂场景下的文件定位变得简单直观。</p>
-                                <p data-lang="en">Break through single-condition limitations to build professional-grade complex filtering logic. Supports multi-level hierarchical condition grouping, with each group independently configurable for AND or OR logic relationships; groups can contain nested subgroups, enabling multi-dimensional combinations like "(file size > 10MB AND format is JPG) OR (created within last 7 days AND name contains 'project')". Provides a visual tree structure for conditions, clearly displaying filter logic; supports re-editing and optimization of saved advanced filter conditions, making file targeting in complex scenarios simple and intuitive.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 元数据面板介绍 -->
-            <section class="metadata-feature">
-                <div class="metadata-content">
-                    <div class="metadata-image-wrapper">
-                        <img src="pics/metadata/metadata_audio.png" alt="Audio Metadata" loading="lazy" onclick="openImageModal(this.src)">
-                        <img src="pics/metadata/metadata_video.png" alt="Video Metadata" loading="lazy" onclick="openImageModal(this.src)">
-                        <img src="pics/metadata/metadata_photo.png" alt="Photo Metadata" loading="lazy" onclick="openImageModal(this.src)">
-                    </div>
-
-                    <div class="metadata-text">
-                        <h2 data-lang="zh">强大的元数据面板</h2>
-                        <h2 data-lang="en">Powerful Metadata Panel</h2>
-                        
-                        <p class="intro" data-lang="zh">强大的文件信息中心与编辑器。选择任意文件，其丰富的元数据立即呈现并支持实时编辑。支持多种文件类型的专业元数据提取和管理，直接复制元数据信息应用到重命名规则，使文件整理更加精准高效。</p>
-                        <p class="intro" data-lang="en">A powerful file information center and editor. Select any file to instantly view its rich metadata with real-time editing support. Supports professional metadata extraction and management for multiple file types, allowing direct copying of metadata to renaming rules for more precise file organization.</p>
-
-                        <div class="metadata-description">
-                            <div class="description-item">
-                                <h3 data-lang="zh">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M9 18V5l12-2v13M9 18c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm12-2c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zM9 9l12-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    音频文件
-                                </h3>
-                                <h3 data-lang="en">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M9 18V5l12-2v13M9 18c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm12-2c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zM9 9l12-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    Audio Files
-                                </h3>
-                                <p data-lang="zh">全面支持MP3、FLAC、M4A、OGG等主流音频格式。自动提取并显示完整的ID3标签信息，包括标题、艺术家、专辑、作曲家、曲目号、年份、流派等关键元数据。内置轻量级编辑器，支持直接修改音频标签并即时保存，让音乐收藏管理变得简单高效。</p>
-                                <p data-lang="en">Comprehensive support for mainstream audio formats including MP3, FLAC, M4A, and OGG. Automatically extracts and displays complete ID3 tag information such as title, artist, album, composer, track number, year, and genre. Built-in lightweight editor allows direct modification of audio tags with instant saving, making music collection management simple and efficient.</p>
-                            </div>
-                            <div class="description-item">
-                                <h3 data-lang="zh">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M23 7l-7 5 7 5V7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    视频文件
-                                </h3>
-                                <h3 data-lang="en">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M23 7l-7 5 7 5V7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    Video Files
-                                </h3>
-                                <p data-lang="zh">完整展示视频文件的技术参数，包括编码格式、比特率、分辨率、帧率等核心信息。深度解析多媒体结构，显示音视频轨道数量、字幕轨道详情以及精确的时长信息，为视频文件管理提供全面的技术支持。</p>
-                                <p data-lang="en">Comprehensively displays technical parameters of video files, including encoding format, bitrate, resolution, frame rate, and other core information. Deep analysis of multimedia structure showing audio/video track counts, subtitle track details, and precise duration information, providing comprehensive technical support for video file management.</p>
-                            </div>
-                            <div class="description-item">
-                                <h3 data-lang="zh">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
-                                        <path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    图像文件
-                                </h3>
-                                <h3 data-lang="en">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
-                                        <path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    Image Files
-                                </h3>
-                                <p data-lang="zh">详细呈现图像文件的基础属性和专业参数，包括分辨率、色彩空间等关键信息。智能提取常用的Exif元数据，涵盖相机制造商、型号、镜头规格、曝光参数、地理位置等核心摄影信息，为摄影作品的归档和管理提供专业支持。</p>
-                                <p data-lang="en">Displays detailed fundamental attributes and professional parameters of image files, including resolution, color space, and other key information. Intelligently extracts commonly used Exif metadata covering camera manufacturer, model, lens specifications, exposure parameters, GPS location, and other core photographic information, providing professional support for photography archiving and management.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 布局切换功能介绍 -->
-            <section class="layout-feature">
-                <div class="layout-content">
-                    <div class="layout-image-wrapper">
-                        <img src="pics/layout/vertical.png" alt="Vertical Layout" loading="lazy" onclick="openImageModal(this.src)">
-                        <img src="pics/layout/horizontal.png" alt="Horizontal Layout" loading="lazy" onclick="openImageModal(this.src)">
-                    </div>
-
-                    <div class="layout-text">
-                        <h2 data-lang="zh">灵活的布局切换</h2>
-                        <h2 data-lang="en">Flexible Layout Switching</h2>
-                        
-                        <p class="intro" data-lang="zh">工作区布局随心切换，完美适配不同工作场景和个人偏好。通过工具栏的布局切换按钮，一键在水平布局和垂直布局之间自由切换，让您的工作空间始终保持最佳状态。</p>
-                        <p class="intro" data-lang="en">Switch workspace layouts effortlessly to perfectly adapt to different work scenarios and personal preferences. With the layout toggle button in the toolbar, seamlessly switch between horizontal and vertical layouts with one click, keeping your workspace always optimized.</p>
-
-                        <!-- 文字描述 -->
-                        <div class="layout-description">
-                            <div class="description-item">
-                                <h3 data-lang="zh">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <rect x="3" y="3" width="18" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                                        <rect x="3" y="14" width="18" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                                    </svg>
-                                    垂直布局
-                                </h3>
-                                <h3 data-lang="en">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <rect x="3" y="3" width="18" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                                        <rect x="3" y="14" width="18" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                                    </svg>
-                                    Vertical Layout
-                                </h3>
-                                <p data-lang="zh">左右分栏设计，左侧栏上下分为文件区和规则区，右侧为可收起的元数据面板。适合注重文件列表和规则配置同步查看的工作流程，通过上下排列让文件操作更加便捷直观。</p>
-                                <p data-lang="en">Side-by-side design with the left panel divided into file area (top) and rule area (bottom), while the right side features a collapsible metadata panel. Ideal for workflows emphasizing simultaneous viewing of file lists and rule configurations, with vertical arrangement for more intuitive file operations.</p>
-                            </div>
-                            <div class="description-item">
-                                <h3 data-lang="zh">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <rect x="3" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
-                                        <rect x="14" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
-                                    </svg>
-                                    水平布局
-                                </h3>
-                                <h3 data-lang="en">
-                                    <svg class="file-type-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <rect x="3" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
-                                        <rect x="14" y="3" width="7" height="18" rx="1" stroke="currentColor" stroke-width="2"/>
-                                    </svg>
-                                    Horizontal Layout
-                                </h3>
-                                <p data-lang="zh">左中右三栏布局，左侧为可收起的规则区，中间为文件列表，右侧为可收起的元数据面板。适合宽屏显示器，让文件列表始终位于视觉中心，左右面板可按需收起以获得更大的文件显示区域，灵活高效。</p>
-                                <p data-lang="en">Left-center-right three-column layout with collapsible rule area on the left, file list in the center, and collapsible metadata panel on the right. Perfect for widescreen monitors, keeping the file list at the visual center while left and right panels can be collapsed as needed for maximum file display area, flexible and efficient.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 主题切换功能介绍 -->
-            <section class="theme-feature">
-                <div class="theme-content">
-                    <!-- 左侧图片 -->
-                    <div class="theme-image">
-                        <img src="pics/theme.png" alt="Light and Dark Theme" loading="lazy" onclick="openImageModal(this.src)">
-                    </div>
-
-                    <!-- 右侧文字内容 -->
-                    <div class="theme-text">
-                        <h2 data-lang="zh">亮暗双主题</h2>
-                        <h2 data-lang="en">Light & Dark Theme</h2>
-                        
-                        <p data-lang="zh">完美支持浅色和深色两种主题模式，自动适配系统主题设置，也可手动切换。无论白天黑夜，都为您提供舒适的视觉体验，保护眼睛，提升工作效率。</p>
-                        <p data-lang="en">Fully supports both light and dark theme modes, automatically adapting to system theme settings with manual override option. Whether day or night, provides a comfortable visual experience, protecting your eyes and enhancing work efficiency.</p>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- 图片放大查看 Modal -->
-        <div class="image-modal" id="imageModal" onclick="closeImageModal()">
-            <button class="image-modal-close" onclick="closeImageModal()" aria-label="Close">×</button>
-            <img id="modalImage" src="" alt="Full size preview">
+            <div class="hero-image-container">
+                <img src="pics/mainview.png" alt="App Main Interface" onclick="openLightbox(this.src)">
+            </div>
         </div>
+    </section>
 
-        <footer class="footer">
-            <p data-lang="zh">© 2025 Lightning Renamer. 保留所有权利。</p>
-            <p data-lang="en">© 2025 Lightning Renamer. All rights reserved.</p>
-        </footer>
+    <!-- Content Sections -->
+    <section class="section alt-bg">
+        <div class="container">
 
-        <script src="script.js"></script>
-        <script>
-            // 图片放大查看功能
-            function openImageModal(src) {
-                const modal = document.getElementById('imageModal');
-                const modalImg = document.getElementById('modalImage');
-                modalImg.src = src;
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden'; // 禁止背景滚动
-            }
+            <!-- Rules -->
+            <div class="feature-row">
+                <div class="feature-text">
+                    <h2 data-lang="zh">14种专业重命名规则</h2>
+                    <h2 data-lang="en">14 Professional Renaming Rules</h2>
 
-            function closeImageModal() {
-                const modal = document.getElementById('imageModal');
-                modal.classList.remove('active');
-                document.body.style.overflow = ''; // 恢复滚动
-            }
+                    <p data-lang="zh">Lightning Renamer
+                        精心打造了14种功能强大的重命名规则，涵盖文件管理的方方面面。从基础的文本替换、插入、删除，到专业的序列化编号、大小写转换、扩展名修改；从实用的清理空白、去除字符、长度填充，到高级的正则表达式匹配、用户自定义输入、随机化处理以及全新加入的自定义脚本规则，每一种规则都经过精心设计，确保简单易用的同时提供强大的功能。
+                    </p>
+                    <p data-lang="zh">
+                        这些规则支持无限组合使用，并可通过直观的拖拽操作自由调整执行顺序。配合实时预览功能，您可以在应用前清晰看到每一步操作的结果，避免误操作。更强大的是，每条规则都支持"作用域"设置，让您能够精准控制规则应用的目标文件范围，实现真正意义上的灵活精准控制。
+                    </p>
 
-            // ESC键关闭modal
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeImageModal();
-                }
-            });
+                    <p data-lang="en">Lightning Renamer features 14 powerful renaming rules covering every aspect of
+                        file management. From basic text replacement, insertion, and deletion, to professional
+                        serialization numbering, case conversion, and extension modification; from practical whitespace
+                        cleaning, character stripping, and padding, to advanced regular expression matching, custom user
+                        input, randomization, and the newly added custom script rule. Each rule is carefully designed to
+                        ensure ease of use while delivering
+                        powerful functionality.</p>
+                    <p data-lang="en">These rules support unlimited combinations and can be freely reordered through
+                        intuitive drag-and-drop operations. With real-time preview functionality, you can clearly see
+                        the results of each operation before applying changes, preventing errors.</p>
+                </div>
+                <div class="feature-image">
+                    <img src="pics/rules/rules.png" alt="Renaming Rules" onclick="openLightbox(this.src)">
+                </div>
+            </div>
 
-            // 筛选功能箭头切换功能
-            function initFilterArrows() {
-                let currentIndex = 0;
-                const totalItems = 2; // 基础筛选、高级筛选
-                
-                const prevBtn = document.querySelector('.filter-prev');
-                const nextBtn = document.querySelector('.filter-next');
-                
-                function goToSlide(index) {
-                    // 循环处理索引
-                    if (index < 0) index = totalItems - 1;
-                    if (index >= totalItems) index = 0;
-                    
-                    currentIndex = index;
-                    
-                    // 只切换图片，不切换文字
-                    document.querySelectorAll('.filter-image .preview-item').forEach(p => p.classList.remove('active'));
-                    document.querySelector(`.filter-image .preview-item[data-index="${index}"]`).classList.add('active');
-                }
-                
-                // 绑定按钮事件
-                prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
-                nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
-            }
+            <!-- Scope -->
+            <div class="feature-row reverse">
+                <div class="feature-text">
+                    <h2 data-lang="zh">手术刀般精准的"规则作用域"功能</h2>
+                    <h2 data-lang="en">Surgical Precision with "Rule Scope"</h2>
 
-            // 布局切换功能箭头切换功能
-            function initLayoutArrows() {
-                let currentIndex = 0;
-                const totalItems = 2; // 垂直布局、水平布局
-                
-                const prevBtn = document.querySelector('.layout-prev');
-                const nextBtn = document.querySelector('.layout-next');
-                
-                function goToSlide(index) {
-                    // 循环处理索引
-                    if (index < 0) index = totalItems - 1;
-                    if (index >= totalItems) index = 0;
-                    
-                    currentIndex = index;
-                    
-                    // 只切换图片，不切换文字
-                    document.querySelectorAll('.layout-image .preview-item').forEach(p => p.classList.remove('active'));
-                    document.querySelector(`.layout-image .preview-item[data-index="${index}"]`).classList.add('active');
-                }
-                
-                // 绑定按钮事件
-                prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
-                nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
-            }
+                    <p data-lang="zh">
+                        如同外科手术刀般精准，规则作用域让您能够将每条规则精确定位到指定文件，在复杂场景下实现极致的重命名控制。当您面对一个混杂着图片、视频和文档的文件夹时，您可以创建一条规则专门作用于所有.jpg文件，另一条规则只作用于文件名包含"报告"的文档，而第三条规则则应用到其余所有文件上。
+                    </p>
+                    <p data-lang="zh">
+                        作用域功能与文件筛选功能完美结合，允许您先用筛选器快速定位特定文件群组（如某个时间段创建的文件、特定大小范围的文件或特定扩展名的文件），然后为这些筛选后的文件单独设置规则，实现多层次、多条件的精准文件处理。
+                    </p>
 
-            // 元数据箭头切换功能
-            function initMetadataArrows() {
-                let currentIndex = 0;
-                const totalItems = 3; // 音频、视频、图像
-                
-                const prevBtn = document.querySelector('.metadata-prev');
-                const nextBtn = document.querySelector('.metadata-next');
-                
-                function goToSlide(index) {
-                    // 循环处理索引
-                    if (index < 0) index = totalItems - 1;
-                    if (index >= totalItems) index = 0;
-                    
-                    currentIndex = index;
-                    
-                    // 只切换图片，不切换文字
-                    document.querySelectorAll('.metadata-image .preview-item').forEach(p => p.classList.remove('active'));
-                    document.querySelector(`.metadata-image .preview-item[data-index="${index}"]`).classList.add('active');
-                }
-                
-                // 绑定按钮事件
-                prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
-                nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
-            }
-            
-            // 页面加载后初始化
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', () => {
-                    initFilterArrows();
-                    initLayoutArrows();
-                    initMetadataArrows();
-                });
+                    <p data-lang="en">Like a surgeon's scalpel, Rule Scope enables you to precisely target each rule to
+                        specific files, achieving ultimate renaming control in complex scenarios. When facing a folder
+                        with a mix of images, videos, and documents, you can create one rule specifically for all .jpg
+                        files, another rule only for files with "report" in their names, and a third rule for all
+                        remaining files.</p>
+                    <p data-lang="en">The scope feature works perfectly with the file filtering function, allowing you
+                        to first use filters to quickly locate specific file groups, and then set separate rules for
+                        these filtered files, achieving multi-level, multi-condition precise file processing.</p>
+                </div>
+                <div class="feature-image">
+                    <img src="pics/rules/scope.png" alt="Rule Scope" onclick="openLightbox(this.src)">
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Metadata Section (White BG) -->
+    <section class="section">
+        <div class="container">
+            <div class="text-center">
+                <h2 data-lang="zh">强大的元数据面板</h2>
+                <h2 data-lang="en">Powerful Metadata Panel</h2>
+                <p class="text-max-800" data-lang="zh">
+                    强大的文件信息中心与编辑器。选择任意文件，其丰富的元数据立即呈现并支持实时编辑。支持多种文件类型的专业元数据提取和管理，直接复制元数据信息应用到重命名规则，使文件整理更加精准高效。</p>
+                <p class="text-max-800" data-lang="en">A powerful file information center and editor. Select any file to
+                    instantly view its rich metadata with real-time editing support. Supports professional metadata
+                    extraction and management for multiple file types, allowing direct copying of metadata to renaming
+                    rules for more precise file organization.</p>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs-nav">
+                <button class="tab-btn active" onclick="switchTab('audio')">
+                    <span data-lang="zh">音频文件</span><span data-lang="en">Audio</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('photo')">
+                    <span data-lang="zh">图像文件</span><span data-lang="en">Image</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('video')">
+                    <span data-lang="zh">视频文件</span><span data-lang="en">Video</span>
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="tab-content">
+
+                <!-- Audio Tab -->
+                <div id="tab-audio" class="tab-pane active">
+                    <div class="highlight-image" onclick="openLightbox('pics/metadata/metadata_audio.png')">
+                        <img src="pics/metadata/metadata_audio.png" alt="Audio Metadata Interface">
+                    </div>
+                    <div class="text-center text-max-800">
+                        <p data-lang="zh">全面支持 MP3, FLAC, M4A, OGG 等主流音频格式。自动提取并显示完整的 ID3
+                            标签信息（标题、艺术家、专辑、作曲家、流派等）。内置轻量级编辑器，允许您直接修改标签并即时保存。</p>
+                        <p data-lang="en">Comprehensive support for MP3, FLAC, M4A, OGG, and more. Automatically
+                            extracts full ID3 tags (Title, Artist, Album, Composer, Genre, etc). Built-in editor allows
+                            direct modification and instant saving.</p>
+                    </div>
+                </div>
+
+                <!-- Photo Tab -->
+                <div id="tab-photo" class="tab-pane">
+                    <div class="highlight-image" onclick="openLightbox('pics/metadata/metadata_photo.png')">
+                        <img src="pics/metadata/metadata_photo.png" alt="Photo Metadata Interface">
+                    </div>
+                    <div class="text-center text-max-800">
+                        <p data-lang="zh">智能提取 Exif 元数据，涵盖相机型号、镜头参数、ISO、光圈、快门速度、拍摄时间及 GPS
+                            地理位置信息。为摄影师提供精确的参数参考，并支持将拍摄时间用于文件名中。</p>
+                        <p data-lang="en">Intelligently extracts Exif metadata including Camera Model, Lens, ISO,
+                            Aperture, Shutter Speed, Date Taken, and GPS. Provides precise data for photographers and
+                            supports using capture time in filenames.</p>
+                    </div>
+                </div>
+
+                <!-- Video Tab -->
+                <div id="tab-video" class="tab-pane">
+                    <div class="highlight-image" onclick="openLightbox('pics/metadata/metadata_video.png')">
+                        <img src="pics/metadata/metadata_video.png" alt="Video Metadata Interface">
+                    </div>
+                    <div class="text-center text-max-800">
+                        <p data-lang="zh">完整展示视频技术参数：编码格式、分辨率、比特率、帧率。深度解析多媒体结构，显示音视频轨道数量、字幕语言及精确时长，帮您快速掌握视频文件的技术细节。</p>
+                        <p data-lang="en">Displays full technical specs: Codec, Resolution, Bitrate, Frame Rate. Deep
+                            structural analysis shows track counts, subtitle languages, and precise duration, giving you
+                            full control over video details.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters & Layout (Alt BG) -->
+    <section class="section alt-bg">
+        <div class="container">
+
+            <!-- Filters -->
+            <div class="feature-row">
+                <div class="feature-text">
+                    <h2 data-lang="zh">智能筛选系统</h2>
+                    <h2 data-lang="en">Intelligent Filtering System</h2>
+                    <p data-lang="zh">
+                        多维度精确定位，海量文件从容管理。支持9大筛选类型的自由组合，通过与/或逻辑关系和分组功能构建复杂筛选条件，配合快速文本搜索和预设筛选方案，无论文件数量多少，都能快速找到目标文件。</p>
+
+                    <p data-lang="en">Multi-dimensional precision targeting for effortless management of massive file
+                        collections. Supports flexible combination of 9 major filter types through AND/OR logic
+                        relationships and grouping functions. Combined with quick text search and preset filter schemes,
+                        quickly locate target files regardless of quantity.</p>
+                </div>
+                <div class="feature-image">
+                    <img src="pics/filter/filter.png" alt="Smart Filters" onclick="openLightbox(this.src)">
+                </div>
+            </div>
+
+            <!-- Layout -->
+            <div class="feature-row reverse">
+                <div class="feature-text">
+                    <h2 data-lang="zh">灵活的布局切换</h2>
+                    <h2 data-lang="en">Flexible Layout Switching</h2>
+                    <p data-lang="zh">工作区布局随心切换，完美适配不同工作场景和个人偏好。通过工具栏的布局切换按钮，一键在水平布局和垂直布局之间自由切换，让您的工作空间始终保持最佳状态。</p>
+                    <p data-lang="en">Switch workspace layouts effortlessly to perfectly adapt to different work
+                        scenarios and personal preferences. With the layout toggle button in the toolbar, seamlessly
+                        switch between horizontal and vertical layouts with one click, keeping your workspace always
+                        optimized.</p>
+                </div>
+                <div class="feature-image">
+                    <img src="pics/layout/vertical.png" alt="Layout Options" onclick="openLightbox(this.src)">
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Security (White BG) -->
+    <section class="section">
+        <div class="container text-center">
+            <h2 data-lang="zh">安全与隐私</h2>
+            <h2 data-lang="en">Security & Privacy</h2>
+            <p class="text-max-800" data-lang="zh">Lightning Renamer 完全遵守 macOS
+                沙盒(Sandbox)安全机制。您的所有文件处理均在本地进行，网络权限仅用于加载必要的在线文档，绝无上传行为。</p>
+            <p class="text-max-800" data-lang="en">Lightning Renamer fully complies with macOS Sandbox security
+                mechanisms. All processing is 100% local. No files are ever uploaded.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p data-lang="zh">© 2026 Lightning Renamer. 保留所有权利。</p>
+        <p data-lang="en">© 2026 Lightning Renamer. All rights reserved.</p>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="">
+    </div>
+
+    <script>
+        const LANG_KEY = 'lightning_renamer_lang';
+
+        function applyLanguage(lang) {
+            const html = document.documentElement;
+            if (lang === 'en') {
+                html.classList.remove('tag-zh');
+                html.classList.add('tag-en');
             } else {
-                initFilterArrows();
-                initLayoutArrows();
-                initMetadataArrows();
+                html.classList.remove('tag-en');
+                html.classList.add('tag-zh');
             }
-        </script>
-    </body>
+            localStorage.setItem(LANG_KEY, lang);
+        }
+
+        function toggleLanguage() {
+            const html = document.documentElement;
+            const current = html.classList.contains('tag-en') ? 'en' : 'zh';
+            const next = current === 'en' ? 'zh' : 'en';
+            applyLanguage(next);
+        }
+
+        // Init language on load
+        (function () {
+            const saved = localStorage.getItem(LANG_KEY);
+            if (saved) {
+                applyLanguage(saved);
+            }
+        })();
+
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        // Keydown 'Esc' to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        function switchTab(type) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Update content: simply toggle active class. CSS Transition handles the rest.
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            document.getElementById('tab-' + type).classList.add('active');
+        }
+    </script>
+
+</body>
+
 </html>
