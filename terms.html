@@ -1,27 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh" class="tag-zh" data-theme="light">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lightning Renamer - 用户协议</title>
-    <meta name="description" content="Lightning Renamer 用户协议，说明服务内容、用户责任、免责声明、知识产权与联系方式。">
+    <title>Lightning Renamer - Terms of Service</title>
+    <meta name="description" content="Lightning Renamer Terms of Service, including service terms, user responsibilities, disclaimers, intellectual property, and contact information.">
     <link rel="icon" type="image/png" href="assets/app-icon.png">
-    <script>
-        (function () {
-            try {
-                const savedTheme = localStorage.getItem("lightning_renamer_theme");
-                const theme = savedTheme === "light" || savedTheme === "dark"
-                    ? savedTheme
-                    : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-                document.documentElement.dataset.theme = theme;
-            } catch (error) {
-                document.documentElement.dataset.theme = "light";
-            }
-        })();
-    </script>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
 </head>
 
 <body data-page="terms">
@@ -34,25 +20,18 @@
                 </a>
                 <nav class="nav-links" aria-label="Primary">
                     <a href="index.html" class="nav-link">
-                        <span data-lang="zh">首页</span>
-                        <span data-lang="en">Home</span>
+
+                        Home
                     </a>
                     <a href="privacy.html" class="nav-link">
-                        <span data-lang="zh">隐私政策</span>
-                        <span data-lang="en">Privacy</span>
+
+                        Privacy
                     </a>
                     <a href="terms.html" class="nav-link is-active">
-                        <span data-lang="zh">用户协议</span>
-                        <span data-lang="en">Terms</span>
+
+                        Terms
                     </a>
-                    <button type="button" class="theme-toggle" data-toggle-theme>
-                        <span class="theme-toggle-icon" data-theme-icon aria-hidden="true">☀︎</span>
-                        <span class="theme-toggle-label" data-theme-label-zh data-lang="zh">浅色</span>
-                        <span class="theme-toggle-label" data-theme-label-en data-lang="en">Light</span>
-                    </button>
-                    <button type="button" class="lang-toggle" data-toggle-language>
-                        EN / 中文
-                    </button>
+
                 </nav>
             </div>
         </div>
@@ -63,16 +42,14 @@
             <div class="shell legal-hero-grid">
                 <div class="copy-card legal-copy">
                     <div class="legal-summary">
-                        <span data-lang="zh">最后更新：2026年1月27日</span>
-                        <span data-lang="en">Last Updated: January 27, 2026</span>
+
+                        Last Updated: January 27, 2026
                     </div>
 
-                    <h1 data-lang="zh">用户协议</h1>
-                    <h1 data-lang="en">Terms of Service</h1>
+                    Terms of Service
 
-                    <p data-lang="zh">欢迎使用 Lightning Renamer。请仔细阅读以下条款，使用本应用即表示您同意接受这些条款的约束。</p>
-                    <p data-lang="en">Welcome to Lightning Renamer. Please read these terms carefully. By using this
-                        application, you agree to be bound by these terms.</p>
+                    Welcome to Lightning Renamer. Please read these terms carefully. By using this
+                        application, you agree to be bound by these terms.
                 </div>
             </div>
         </section>
@@ -80,71 +57,56 @@
         <section class="section">
             <div class="shell">
                 <article class="document-card">
-                    <h2 data-lang="zh">1. 协议的接受</h2>
-                    <h2 data-lang="en">1. Acceptance of Terms</h2>
-                    <p data-lang="zh">下载、安装或使用 Lightning Renamer
-                        即表示您已阅读、理解并同意受本服务条款的法律约束。如果您不同意这些条款的全部或任何部分，请立即停止使用并从您的设备中移除本应用程序。</p>
-                    <p data-lang="en">By downloading, installing, or using Lightning Renamer, you signify that you have
+
+                    1. Acceptance of Terms
+
+                    By downloading, installing, or using Lightning Renamer, you signify that you have
                         read, understood, and agree to be legally bound by these Terms of Service. If you do not agree
                         to all or any part of these terms, please discontinue use and remove the application from your
-                        device immediately.</p>
+                        device immediately.
 
-                    <h2 data-lang="zh">2. 用户的责任与义务</h2>
-                    <h2 data-lang="en">2. User Responsibilities and Obligations</h2>
+                    2. User Responsibilities and Obligations
                     <ul>
-                        <li data-lang="zh">
-                            <strong>备份义务：</strong>由于本软件执行的是客观的文件重命名操作，您须全权负责在执行批量重命名指令前，对您的数据进行独立、充分且妥善的备份（尤其是针对系统文件或具有代码依赖关系的文件）。
-                        </li>
-                        <li data-lang="en"><strong>Duty to Backup:</strong> Given that the Software performs objective
+
+                        <strong>Duty to Backup:</strong> Given that the Software performs objective
                             file renaming operations, you are solely responsible for executing independent, adequate,
                             and secure backups of your data before initiating batch workflows (particularly regarding
-                            system files or dependency-linked files).</li>
-                        <li data-lang="zh">
-                            <strong>合法使用：</strong>您承诺不将本应用用于隐藏非法内容、伪造文件来源、破坏数字版权管理（DRM）、恶意传播病毒（如伪装扩展名）等违反适用法律规范的行为。</li>
-                        <li data-lang="en"><strong>Lawful Use:</strong> You commit not to utilize the Software to
+                            system files or dependency-linked files).
+
+                        <strong>Lawful Use:</strong> You commit not to utilize the Software to
                             obscure illicit content, spoof file origins, circumvent DRM, or distribute malicious
-                            payloads (e.g., through extension spoofing) in violation of applicable laws.</li>
-                        <li data-lang="zh"><strong>逆向工程限制：</strong>您同意不对该应用程序的任何部分进行反汇编、反编译或以其他方式试图提取源代码。</li>
-                        <li data-lang="en"><strong>Reverse Engineering Restriction:</strong> You agree not to
+                            payloads (e.g., through extension spoofing) in violation of applicable laws.
+
+                        <strong>Reverse Engineering Restriction:</strong> You agree not to
                             disassemble, decompile, or otherwise attempt to derive the source code of any portion of the
-                            Application.</li>
+                            Application.
                     </ul>
 
-                    <h2 data-lang="zh">3. 免责声明与责任限制</h2>
-                    <h2 data-lang="en">3. Disclaimer and Limitation of Liability</h2>
-                    <p data-lang="zh">
-                        <strong>按“原样”提供：</strong>本应用程序及其所有功能均按“现状（As-Is）”与“可用（As-Available）”基础提供。开发者针对适销性、特定用途的适用性或不侵权不作任何明示或暗示的保证。
-                    </p>
-                    <p data-lang="en"><strong>"As-Is" Provision:</strong> The Application is provided on an "As-Is" and
+                    3. Disclaimer and Limitation of Liability
+
+                    <strong>"As-Is" Provision:</strong> The Application is provided on an "As-Is" and
                         "As-Available" basis. The Developer disclaims all warranties, express or implied, including but
                         not limited to the implied warranties of merchantability, fitness for a particular purpose and
-                        non-infringement.</p>
-                    <p data-lang="zh">
-                        <strong>连带损失免责：</strong>在适用法律允许的最大范围内，因使用或无法使用本软件（包括但不限于由正则匹配失误、正则替换错位引起的不可逆数据丢失、业务中断、利润损失等）引发的任何直接、间接、偶然、特殊或惩罚性损害，开发者概不负责。
-                    </p>
-                    <p data-lang="en"><strong>Limitation of Liability:</strong> To the maximum extent permitted by
+                        non-infringement.
+
+                    <strong>Limitation of Liability:</strong> To the maximum extent permitted by
                         applicable law, the Developer shall not be liable for any direct, indirect, incidental, special,
                         or consequential damages resulting from the use or inability to use the Software (including, but
                         not limited to, irreversible data loss induced by syntax errors, regex misconfiguration,
-                        business interruption, or loss of profits).</p>
+                        business interruption, or loss of profits).
 
-                    <h2 data-lang="zh">4. 知识产权与所有权</h2>
-                    <h2 data-lang="en">4. Intellectual Property</h2>
-                    <p data-lang="zh">Lightning Renamer
-                        的代码架构、算法引擎、视觉界面（UI/UX）排列、标志与设计元素均受所适用的版权、商标及其他知识产权法的严格保护。本条款赋予您的仅仅是有限的、非独占性的、可被随时撤销的个人使用许可，不代表任何知识产权的转让。
-                    </p>
-                    <p data-lang="en">The architectural code, algorithmic engines, visual interfaces (UI/UX),
+                    4. Intellectual Property
+
+                    The architectural code, algorithmic engines, visual interfaces (UI/UX),
                         proprietary logos, and design elements of Lightning Renamer are strongly protected by applicable
                         copyright, trademark, and intellectual property laws. These terms only grant you a limited,
                         non-exclusive, revocable license for personal or internal business use, and do NOT constitute a
-                        transfer of ownership.</p>
+                        transfer of ownership.
 
-                    <h2 data-lang="zh">7. 联系方式</h2>
-                    <h2 data-lang="en">7. Contact Information</h2>
-                    <p data-lang="zh">如果您对本协议有任何疑问，请联系我们：</p>
-                    <p data-lang="zh">邮箱：<a href="mailto:meowgiccode@163.com">meowgiccode@163.com</a></p>
-                    <p data-lang="en">If you have any questions about these terms, please contact us at:</p>
-                    <p data-lang="en">Email: <a href="mailto:meowgiccode@163.com">meowgiccode@163.com</a></p>
+                    7. Contact Information
+
+                    If you have any questions about these terms, please contact us at:
+                    Email: <a href="mailto:meowgiccode@163.com">meowgiccode@163.com</a>
                 </article>
             </div>
         </section>
@@ -156,17 +118,17 @@
                 <div class="footer-links">
                     <a href="index.html" class="footer-link">Lightning Renamer</a>
                     <a href="privacy.html" class="footer-link">
-                        <span data-lang="zh">隐私政策</span>
-                        <span data-lang="en">Privacy</span>
+
+                        Privacy
                     </a>
                     <a href="terms.html" class="footer-link">
-                        <span data-lang="zh">用户协议</span>
-                        <span data-lang="en">Terms</span>
+
+                        Terms
                     </a>
                 </div>
                 <div class="footer-copy">
-                    <span data-lang="zh">© 2026 Lightning Renamer. 保留所有权利。</span>
-                    <span data-lang="en">© 2026 Lightning Renamer. All rights reserved.</span>
+
+                    © 2026 Lightning Renamer. All rights reserved.
                 </div>
             </div>
         </div>
