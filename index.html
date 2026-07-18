@@ -1,580 +1,535 @@
-<!DOCTYPE html>
-<html lang="zh" class="tag-zh" data-theme="light" data-hero-preview="light">
-
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lightning Renamer - 智能文件重命名工具</title>
-    <meta name="description" content="Lightning Renamer 是一款专为 Mac 用户打造的专业级批量重命名工具，提供 14 种重命名规则、元数据支持、规则作用域与智能筛选能力。">
-    <link rel="icon" type="image/png" href="assets/app-icon.png">
-    <script>
-        (function () {
-            try {
-                const savedTheme = localStorage.getItem("lightning_renamer_theme");
-                const theme = savedTheme === "light" || savedTheme === "dark"
-                    ? savedTheme
-                    : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-                document.documentElement.dataset.theme = theme;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Lightning Renamer is a local-first Mac file renaming utility for text transformation, cleanup, numbering, extension handling, advanced automation, metadata, filtering, and rule scope workflows." />
+  <title>Lightning Renamer — Bring order to your files</title>
+  <link rel="icon" href="assets/app-icon.png" type="image/png" />
+  <style>
+    :root {
+      --bg: #f7f8f9;
+      --surface: #ffffff;
+      --surface-soft: #eef1f4;
+      --ink: #0b1d2f;
+      --muted: #5e6c7b;
+      --line: #dbe1e6;
+      --line-strong: #c7d0d9;
+      --accent: #e99a1b;
+      --accent-ink: #7a4a00;
+      --navy-band: #0e2237;
+      --navy-band-soft: #152f4a;
+      --display: ui-rounded, "SF Pro Rounded", "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+      --mono: "SFMono-Regular", ui-monospace, Menlo, monospace;
+      --max: 1240px;
+      --ease: cubic-bezier(0.23, 1, 0.32, 1);
+      color-scheme: light;
+    }
 
-                const savedHeroPreview = localStorage.getItem("lightning_renamer_hero_preview");
-                const heroPreview = savedHeroPreview === "light" || savedHeroPreview === "dark"
-                    ? savedHeroPreview
-                    : theme;
-                document.documentElement.dataset.heroPreview = heroPreview;
-            } catch (error) {
-                document.documentElement.dataset.theme = "light";
-                document.documentElement.dataset.heroPreview = "light";
-            }
-        })();
-    </script>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--body);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    :focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 70%, white); outline-offset: 3px; }
+
+    .shell { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+      background: color-mix(in srgb, var(--bg) 90%, transparent);
+      backdrop-filter: blur(18px);
+    }
+    .nav-bar {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; letter-spacing: 0; }
+    .brand img { width: 30px; height: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgb(11 29 47 / 0.16); }
+    .nav-links { display: flex; align-items: center; gap: 22px; color: var(--muted); font-size: 0.9rem; }
+    .nav-links a { transition: color 180ms var(--ease); }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta { color: var(--ink) !important; font-weight: 600; }
+    .nav-cta::after { content: " ↗"; color: var(--accent-ink); }
+
+    .hero { padding: 74px 0 84px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(300px, 0.82fr) minmax(0, 1.18fr); align-items: center; gap: clamp(40px, 6vw, 88px); }
+    .eyebrow, .section-kicker {
+      margin: 0 0 20px;
+      color: var(--accent-ink);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { margin: 0; font-family: var(--display); letter-spacing: 0; }
+    h1 { max-width: 560px; font-size: 5.5rem; line-height: 0.96; }
+    .hero-copy .lead { max-width: 48ch; margin: 28px 0 0; color: var(--muted); font-size: 1.2rem; line-height: 1.6; }
+    .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; margin-top: 34px; }
+    .store-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 9px 18px 9px 14px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 3px 0 #061321, 0 10px 18px rgb(11 29 47 / 0.16);
+      transition: transform 180ms var(--ease), box-shadow 180ms var(--ease), background-color 180ms var(--ease);
+    }
+    .store-button:hover { transform: translateY(-2px); box-shadow: 0 5px 0 #061321, 0 14px 24px rgb(11 29 47 / 0.2); }
+    .store-button:active { transform: translateY(1px); box-shadow: 0 1px 0 #061321, 0 5px 12px rgb(11 29 47 / 0.16); }
+    .store-button svg { width: 21px; height: 21px; flex: 0 0 auto; }
+    .store-button-text { display: grid; gap: 1px; line-height: 1.05; text-align: left; }
+    .store-button-text small { font-size: 0.66rem; letter-spacing: 0; text-transform: uppercase; opacity: 0.72; }
+    .store-button-text strong { font-size: 0.98rem; font-weight: 600; }
+    .text-link { color: var(--muted); font-size: 0.93rem; }
+    .text-link span { border-bottom: 1px solid var(--line-strong); transition: border-color 180ms var(--ease), color 180ms var(--ease); }
+    .text-link:hover { color: var(--ink); }
+    .text-link:hover span { border-color: var(--ink); }
+    .feature-guide-link { display: inline-block; margin-top: 26px; }
+
+    .hero-media-wrap { width: 100%; max-width: 720px; justify-self: end; align-self: center; }
+    .hero-media {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: #dfe5eb;
+      box-shadow: 0 24px 54px rgb(11 29 47 / 0.15), 0 2px 0 rgb(255 255 255 / 0.88) inset;
+    }
+    .hero-media::before { content: ""; display: block; height: 8px; border-bottom: 1px solid rgb(11 29 47 / 0.08); background: #edf0f2; }
+    .hero-media img { width: 100%; max-height: 400px; aspect-ratio: 2537 / 1241; object-fit: contain; }
+    .hero-media-caption { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 15px; border-top: 1px solid rgb(11 29 47 / 0.11); background: var(--surface); color: var(--muted); font-size: 0.78rem; }
+    .hero-media-caption strong { color: var(--ink); font-weight: 600; }
+
+    .feature-band { padding: 104px 0 110px; border-bottom: 1px solid var(--line); background: var(--surface); }
+    .feature-band--soft { background: var(--surface-soft); }
+    .feature-intro { display: grid; grid-template-columns: minmax(260px, 0.78fr) minmax(0, 1.22fr); gap: clamp(38px, 8vw, 118px); align-items: end; }
+    .feature-heading h2 { max-width: 13ch; font-size: 4.2rem; line-height: 0.98; }
+    .feature-copy p { max-width: 54ch; margin: 0; color: var(--muted); font-size: 1.03rem; line-height: 1.7; }
+    .feature-list { display: grid; gap: 12px; margin: 30px 0 0; padding: 0; list-style: none; }
+    .feature-list li { display: flex; gap: 12px; align-items: baseline; color: var(--ink); font-size: 0.92rem; }
+    .feature-list li::before { content: ""; width: 7px; height: 7px; flex: 0 0 auto; margin-top: 0.36em; border-radius: 50%; background: var(--ink); }
+
+    .media-group {
+      display: grid;
+      gap: 20px;
+      width: min(100%, 1120px);
+      margin: 54px auto 0;
+      align-items: stretch;
+    }
+    .media-group--rules, .media-group--filtering, .media-group--scope, .media-group--layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .media-group--metadata { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .media-card {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 14px 28px rgb(11 29 47 / 0.09);
+    }
+    .media-card--primary { grid-column: 1 / -1; }
+    .media-viewport {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      overflow: hidden;
+      background: #e8ecef;
+    }
+    .media-viewport img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; }
+    .media-card--primary .media-viewport { height: clamp(220px, 27vw, 340px); }
+    .media-card--support .media-viewport { height: clamp(230px, 27vw, 340px); }
+    .media-group--metadata .media-viewport { height: clamp(280px, 30vw, 390px); }
+    .media-group--filtering .media-card:not(.media-card--compact) .media-viewport { aspect-ratio: 1280 / 688; max-height: 310px; }
+    .media-card--compact { grid-column: 1 / -1; width: min(56%, 580px); justify-self: center; }
+    .media-card--compact .media-viewport { height: clamp(280px, 32vw, 380px); }
+    .media-group--scope .media-viewport { aspect-ratio: 1904 / 1091; max-height: 330px; }
+    .media-group--layout .media-viewport { aspect-ratio: 1574 / 886; max-height: 330px; }
+    .media-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+    .media-caption strong { color: var(--ink); font-weight: 600; }
+    .media-caption span:last-child { flex: 0 0 auto; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0; text-transform: uppercase; }
+
+    .footer { padding: 32px 0 42px; border-top: 1px solid var(--line); background: var(--surface); }
+    .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; color: var(--muted); font-size: 0.82rem; }
+    .footer-links { display: flex; gap: 18px; }
+    .footer-links a:hover { color: var(--ink); }
+    .legal-links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 28px; }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    @media (max-width: 980px) {
+      .hero { padding-top: 68px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 52px; }
+      .hero-copy { max-width: 720px; }
+      .hero-media-wrap { max-width: 860px; justify-self: start; }
+      h1 { font-size: 4.6rem; }
+      .feature-heading h2 { font-size: 3.6rem; }
+      .feature-band { padding: 92px 0 98px; }
+      .feature-intro { gap: 48px; }
+      .media-group { margin-top: 46px; }
+      .media-group--metadata .media-viewport { height: clamp(260px, 34vw, 340px); }
+    }
+    @media (max-width: 820px) {
+      .feature-intro { grid-template-columns: 1fr; gap: 26px; align-items: start; }
+      .feature-heading h2 { max-width: 12ch; }
+      .media-group {
+        display: flex;
+        width: 100%;
+        max-width: none;
+        margin-right: calc((100vw - 100%) / -2);
+        padding: 0 calc((100vw - 100%) / 2) 10px 0;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scroll-snap-type: inline mandatory;
+        scrollbar-width: thin;
+      }
+      .media-card, .media-card--compact { flex: 0 0 min(76vw, 470px); width: auto; scroll-snap-align: start; }
+      .media-card .media-viewport,
+      .media-card--primary .media-viewport,
+      .media-card--support .media-viewport,
+      .media-group--metadata .media-viewport,
+      .media-card--compact .media-viewport,
+      .media-group--scope .media-viewport,
+      .media-group--layout .media-viewport { height: auto; max-height: 330px; aspect-ratio: 16 / 10; }
+    }
+    @media (max-width: 700px) {
+      .shell { width: min(var(--max), calc(100% - 32px)); }
+      .nav-bar { min-height: 64px; }
+      .nav-links { gap: 8px; font-size: 0.78rem; }
+      .nav-links a:not(.nav-cta) { display: none !important; }
+      .hero { padding: 54px 0 64px; }
+      h1 { font-size: 3.4rem; }
+      .hero-copy .lead { font-size: 1rem; }
+      .hero-media-caption { align-items: flex-start; flex-direction: column; gap: 8px; }
+      .feature-band { padding: 78px 0; }
+      .feature-heading h2 { font-size: 3rem; }
+      .feature-copy p { font-size: 0.98rem; }
+      .media-group { gap: 14px; margin-top: 38px; }
+      .media-card, .media-card--compact { flex-basis: min(84vw, 420px); }
+      .media-caption { min-height: 74px; align-items: flex-start; flex-direction: column; gap: 6px; }
+      .footer-row { align-items: flex-start; flex-direction: column; }
+      .footer-links { flex-wrap: wrap; }
+    }
+    @media (max-width: 420px) {
+      .brand span { display: none; }
+      h1 { font-size: 3rem; }
+      .feature-heading h2 { font-size: 2.65rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
 </head>
+<body>
+  <header class="site-header">
+    <div class="shell nav-bar">
+      <a class="brand" href="#top" aria-label="Lightning Renamer home">
+        <img src="assets/app-icon.png" alt="" />
+        <span>Lightning Renamer</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#rules">Rules</a>
+        <a href="#metadata">Metadata</a>
+        <a href="#filtering">Filtering</a>
+        <a href="#security">Security</a>
+        <a class="nav-cta" href="#download">Get the Mac app</a>
+      </nav>
+    </div>
+  </header>
 
-<body data-page="home">
-    <header class="site-header">
-        <div class="shell">
-            <div class="nav-bar">
-                <a href="index.html" class="brand" aria-label="Lightning Renamer">
-                    <span class="brand-mark" aria-hidden="true"></span>
-                    <span class="brand-text">Lightning Renamer</span>
-                </a>
-                <nav class="nav-links" aria-label="Primary">
-                    <a href="#overview" class="nav-link is-active">
-                        <span data-lang="zh">概览</span>
-                        <span data-lang="en">Overview</span>
-                    </a>
-                    <a href="#metadata" class="nav-link">
-                        <span data-lang="zh">元数据</span>
-                        <span data-lang="en">Metadata</span>
-                    </a>
-                    <a href="#security" class="nav-link">
-                        <span data-lang="zh">安全</span>
-                        <span data-lang="en">Security</span>
-                    </a>
-                    <a href="privacy.html" class="nav-link">
-                        <span data-lang="zh">隐私政策</span>
-                        <span data-lang="en">Privacy</span>
-                    </a>
-                    <a href="terms.html" class="nav-link">
-                        <span data-lang="zh">用户协议</span>
-                        <span data-lang="en">Terms</span>
-                    </a>
-                    <button type="button" class="theme-toggle" data-toggle-theme>
-                        <span class="theme-toggle-icon" data-theme-icon aria-hidden="true">☀︎</span>
-                        <span class="theme-toggle-label" data-theme-label-zh data-lang="zh">浅色</span>
-                        <span class="theme-toggle-label" data-theme-label-en data-lang="en">Light</span>
-                    </button>
-                    <button type="button" class="lang-toggle" data-toggle-language>
-                        EN / 中文
-                    </button>
-                </nav>
-            </div>
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="shell hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">A sharper way to work with files</p>
+          <h1 id="hero-title">Rename with intent.</h1>
+          <p class="lead">Lightning Renamer brings rules, metadata, and a live preview into one focused Mac workspace - so a messy folder can become a system in a few considered steps.</p>
+          <div class="hero-actions" id="download">
+            <a class="store-button" href="#" aria-label="Download Lightning Renamer from the Mac App Store">
+              <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z" /></svg>
+              <span class="store-button-text"><small>Download on the</small><strong>Mac App Store</strong></span>
+            </a>
+            <a class="text-link" href="#rules">See the workflow ↓</a>
+          </div>
         </div>
-    </header>
 
-    <main>
-        <section class="section hero-section" id="overview">
-            <div class="shell hero-grid">
-                <div class="hero-copy">
-                    <div class="hero-tags">
-                        <span class="hero-tag">
-                            <span data-lang="zh">14种专业重命名规则</span>
-                            <span data-lang="en">14 Professional Renaming Rules</span>
-                        </span>
-                        <span class="hero-tag">
-                            <span data-lang="zh">强大的元数据面板</span>
-                            <span data-lang="en">Powerful Metadata Panel</span>
-                        </span>
-                        <span class="hero-tag">
-                            <span data-lang="zh">安全与隐私</span>
-                            <span data-lang="en">Security &amp; Privacy</span>
-                        </span>
-                    </div>
-
-                    <h1 data-lang="zh">Lightning Renamer</h1>
-                    <h1 data-lang="en">Lightning Renamer</h1>
-
-                    <p data-lang="zh">告别繁琐，一键掌控！Lightning Renamer
-                        是您管理海量文件的高效解决方案，以其高度的灵活性和强大的功能，让文件重命名变得简单、智能、高效。</p>
-                    <p data-lang="en">Simplify file management with one powerful tool! Lightning Renamer offers an
-                        efficient solution for organizing your files with flexibility, intelligence, and speed.</p>
-
-                    <p data-lang="zh">Lightning Renamer 是一款专为 Mac
-                        用户打造的专业级批量重命名工具。无论您是摄影师、设计师还是普通用户，面对成百上千的文件，它都能轻松应对。内置14种功能各异的重命名规则，支持无限组合、拖拽排序、文件名称实时预览，更有丰富的元数据支持和创新的"规则作用域"功能，将复杂的文件整理工作化繁为简。
-                    </p>
-                    <p data-lang="en">Lightning Renamer is a professional batch renaming tool designed specifically for
-                        Mac users. Whether you're a photographer, designer, or everyday user dealing with hundreds of
-                        files, this app handles it all with ease. With 14 versatile renaming rules, unlimited
-                        combinations, drag-and-drop reordering, and real-time previews, plus extensive metadata support
-                        and the innovative "rule scope" feature, Lightning Renamer transforms complex file organization
-                        into a simple task.</p>
-
-                    <div class="hero-actions">
-                        <a href="#" class="store-button" aria-label="Download Lightning Renamer on the Mac App Store">
-                            <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
-                                <path
-                                    d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z" />
-                            </svg>
-                            <span class="btn-text">
-                                <span class="small" data-lang="zh">下载于</span>
-                                <span class="small" data-lang="en">Download on the</span>
-                                <span class="big">Mac App Store</span>
-                            </span>
-                        </a>
-                        <span class="summary-chip">
-                            <span data-lang="zh"><strong>本地处理</strong> · 所有文件处理均在本地进行，绝无上传行为。</span>
-                            <span data-lang="en"><strong>100% local</strong> · All processing is 100% local. No files
-                                are ever uploaded.</span>
-                        </span>
-                    </div>
-                </div>
-
-                <div class="hero-stage hero-stage-live" role="img"
-                    aria-label="Lightning Renamer main workspace preview in light and dark mode">
-                    <div class="hero-stage-top">
-                        <button type="button" class="hero-preview-switch" data-toggle-hero-preview
-                            aria-label="Toggle interface preview theme">
-                            <span class="hero-preview-switch-track">
-                                <span class="hero-preview-switch-icon hero-preview-switch-icon-sun"
-                                    aria-hidden="true">☀︎</span>
-                                <span class="hero-preview-switch-icon hero-preview-switch-icon-moon"
-                                    aria-hidden="true">☾</span>
-                                <span class="hero-preview-switch-thumb" aria-hidden="true"></span>
-                            </span>
-                        </button>
-                    </div>
-
-                    <figure class="hero-workspace-frame float-slow">
-                        <img src="assets/hero/mainworkspace-light.png"
-                            alt="Lightning Renamer main workspace in light mode"
-                            class="hero-workspace-shot hero-workspace-shot-light">
-                        <img src="assets/hero/mainworkspace-dark.png"
-                            alt="Lightning Renamer main workspace in dark mode"
-                            class="hero-workspace-shot hero-workspace-shot-dark">
-                    </figure>
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="shell">
-                <div class="feature-grid">
-                    <article class="copy-card">
-                        <h2 data-lang="zh">14种专业重命名规则</h2>
-                        <h2 data-lang="en">14 Professional Renaming Rules</h2>
-
-                        <p data-lang="zh">Lightning Renamer
-                            精心打造了14种功能强大的重命名规则，涵盖文件管理的方方面面。从基础的文本替换、插入、删除，到专业的序列化编号、大小写转换、扩展名修改；从实用的清理空白、去除字符、长度填充，到高级的正则表达式匹配、用户自定义输入、随机化处理以及全新加入的自定义脚本规则，每一种规则都经过精心设计，确保简单易用的同时提供强大的功能。
-                        </p>
-                        <p data-lang="zh">
-                            这些规则支持无限组合使用，并可通过直观的拖拽操作自由调整执行顺序。配合实时预览功能，您可以在应用前清晰看到每一步操作的结果，避免误操作。更强大的是，每条规则都支持"作用域"设置，让您能够精准控制规则应用的目标文件范围，实现真正意义上的灵活精准控制。
-                        </p>
-
-                        <p data-lang="en">Lightning Renamer features 14 powerful renaming rules covering every aspect
-                            of file management. From basic text replacement, insertion, and deletion, to professional
-                            serialization numbering, case conversion, and extension modification; from practical
-                            whitespace cleaning, character stripping, and padding, to advanced regular expression
-                            matching, custom user input, randomization, and the newly added custom script rule. Each
-                            rule is carefully designed to ensure ease of use while delivering powerful functionality.
-                        </p>
-                        <p data-lang="en">These rules support unlimited combinations and can be freely reordered
-                            through intuitive drag-and-drop operations. With real-time preview functionality, you can
-                            clearly see the results of each operation before applying changes, preventing errors.</p>
-                    </article>
-
-                    <div class="stage-card rules-stage carousel-stage" id="rules-carousel" role="region"
-                        aria-label="Rules showcase carousel">
-                        <div class="carousel-track-container">
-                            <ul class="carousel-track">
-                                <li class="carousel-slide is-active"><img src="assets/rules/rule-main.png"
-                                        alt="Rule Main" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rule-metadata-selector.png"
-                                        alt="Metadata Selector" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rule-preset.png" alt="Rule Preset"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/case.png" alt="Case Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/clean.png" alt="Clean Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/delete.png" alt="Delete Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/extension.png"
-                                        alt="Extension Rule" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/insert.png" alt="Insert Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/padding.png" alt="Padding Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/randomize.png"
-                                        alt="Randomize Rule" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/regexp.png" alt="Regexp Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/remove.png" alt="Remove Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/replace.png" alt="Replace Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/script.png" alt="Script Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/serialize.png"
-                                        alt="Serialize Rule" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/strip.png" alt="Strip Rule"
-                                        class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/rules/rules/user-input.png"
-                                        alt="User Input Rule" class="carousel-image"></li>
-                            </ul>
-                        </div>
-                        <div class="carousel-nav">
-                            <button class="carousel-indicator is-active" aria-label="Slide 1"></button>
-                            <button class="carousel-indicator" aria-label="Slide 2"></button>
-                            <button class="carousel-indicator" aria-label="Slide 3"></button>
-                            <button class="carousel-indicator" aria-label="Slide 4"></button>
-                            <button class="carousel-indicator" aria-label="Slide 5"></button>
-                            <button class="carousel-indicator" aria-label="Slide 6"></button>
-                            <button class="carousel-indicator" aria-label="Slide 7"></button>
-                            <button class="carousel-indicator" aria-label="Slide 8"></button>
-                            <button class="carousel-indicator" aria-label="Slide 9"></button>
-                            <button class="carousel-indicator" aria-label="Slide 10"></button>
-                            <button class="carousel-indicator" aria-label="Slide 11"></button>
-                            <button class="carousel-indicator" aria-label="Slide 12"></button>
-                            <button class="carousel-indicator" aria-label="Slide 13"></button>
-                            <button class="carousel-indicator" aria-label="Slide 14"></button>
-                            <button class="carousel-indicator" aria-label="Slide 15"></button>
-                            <button class="carousel-indicator" aria-label="Slide 16"></button>
-                            <button class="carousel-indicator" aria-label="Slide 17"></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="feature-grid reverse">
-                    <article class="copy-card">
-                        <h2 data-lang="zh">手术刀般精准的"规则作用域"功能</h2>
-                        <h2 data-lang="en">Surgical Precision with "Rule Scope"</h2>
-
-                        <p data-lang="zh">
-                            如同外科手术刀般精准，规则作用域让您能够将每条规则精确定位到指定文件，在复杂场景下实现极致的重命名控制。当您面对一个混杂着图片、视频和文档的文件夹时，您可以创建一条规则专门作用于所有.jpg文件，另一条规则只作用于文件名包含"报告"的文档，而第三条规则则应用到其余所有文件上。
-                        </p>
-                        <p data-lang="zh">
-                            作用域功能与文件筛选功能完美结合，允许您先用筛选器快速定位特定文件群组（如某个时间段创建的文件、特定大小范围的文件或特定扩展名的文件），然后为这些筛选后的文件单独设置规则，实现多层次、多条件的精准文件处理。
-                        </p>
-
-                        <p data-lang="en">Like a surgeon's scalpel, Rule Scope enables you to precisely target each
-                            rule to specific files, achieving ultimate renaming control in complex scenarios. When
-                            facing a folder with a mix of images, videos, and documents, you can create one rule
-                            specifically for all .jpg files, another rule only for files with "report" in their names,
-                            and a third rule for all remaining files.</p>
-                        <p data-lang="en">The scope feature works perfectly with the file filtering function, allowing
-                            you to first use filters to quickly locate specific file groups, and then set separate
-                            rules for these filtered files, achieving multi-level, multi-condition precise file
-                            processing.</p>
-                    </article>
-
-                    <div class="stage-card scope-stage carousel-stage" id="scope-carousel" role="region"
-                        aria-label="Rule scope showcase carousel">
-                        <div class="carousel-track-container">
-                            <ul class="carousel-track">
-                                <li class="carousel-slide is-active"><img src="assets/scope/scope-file.png"
-                                        alt="Scope Rule File Matching" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/scope/scope-view.png"
-                                        alt="Rule Scope UI View" class="carousel-image"></li>
-                            </ul>
-                        </div>
-                        <div class="carousel-nav">
-                            <button class="carousel-indicator is-active" aria-label="Slide 1"></button>
-                            <button class="carousel-indicator" aria-label="Slide 2"></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section" id="metadata">
-            <div class="shell">
-                <div class="metadata-shell">
-                    <div class="section-heading">
-                        <h2 data-lang="zh">强大的元数据面板</h2>
-                        <h2 data-lang="en">Powerful Metadata Panel</h2>
-                        <p data-lang="zh">
-                            强大的文件信息中心与编辑器。选择任意文件，其丰富的元数据立即呈现并支持实时编辑。支持多种文件类型的专业元数据提取和管理，直接复制元数据信息应用到重命名规则，使文件整理更加精准高效。
-                        </p>
-                        <p data-lang="en">A powerful file information center and editor. Select any file to instantly
-                            view its rich metadata with real-time editing support. Supports professional metadata
-                            extraction and management for multiple file types, allowing direct copying of metadata to
-                            renaming rules for more precise file organization.</p>
-                    </div>
-                </div>
-
-                <div class="tab-stage metadata-stage-container">
-                    <div class="tabs-wrap">
-                        <div class="tabs" role="tablist" aria-label="Metadata types">
-                            <button type="button" class="tab-btn is-active" data-tab-target="audio" role="tab"
-                                aria-selected="true">
-                                <span data-lang="zh">音频文件</span>
-                                <span data-lang="en">Audio</span>
-                            </button>
-                            <button type="button" class="tab-btn" data-tab-target="photo" role="tab"
-                                aria-selected="false">
-                                <span data-lang="zh">图像文件</span>
-                                <span data-lang="en">Image</span>
-                            </button>
-                            <button type="button" class="tab-btn" data-tab-target="video" role="tab"
-                                aria-selected="false">
-                                <span data-lang="zh">视频文件</span>
-                                <span data-lang="en">Video</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane is-active" data-tab-pane="audio">
-                        <div class="tab-panel metadata-tab-panel">
-                            <div class="tab-stage metadata-audio metadata-gallery-stage metadata-stage-live" role="img"
-                                aria-label="Audio metadata placeholder interface">
-                                <div class="metadata-gallery metadata-gallery-audio">
-                                    <figure
-                                        class="metadata-real-shot metadata-real-shot-portrait metadata-real-shot-fade">
-                                        <img src="assets/metadata/audio-main.png" alt="Audio metadata panel screenshot"
-                                            class="metadata-real-image metadata-real-image-top">
-                                    </figure>
-
-                                    <div class="metadata-shot-stack metadata-shot-stack-live">
-                                        <figure class="metadata-real-shot metadata-real-shot-card">
-                                            <img src="assets/metadata/audio-editor.png"
-                                                alt="Audio tag editor screenshot" class="metadata-real-image">
-                                        </figure>
-
-                                        <figure class="metadata-real-shot metadata-real-shot-card">
-                                            <img src="assets/metadata/audio-tags-all.png"
-                                                alt="Audio all tags screenshot" class="metadata-real-image">
-                                        </figure>
-                                    </div>
-                                </div>
-                            </div>
-                            <article class="tab-copy">
-                                <p data-lang="zh">全面支持 MP3, FLAC, M4A, OGG 等主流音频格式。自动提取并显示完整的 ID3
-                                    标签信息（标题、艺术家、专辑、作曲家、流派等）。内置轻量级编辑器，允许您直接修改标签并即时保存。</p>
-                                <p data-lang="en">Comprehensive support for MP3, FLAC, M4A, OGG, and more.
-                                    Automatically extracts full ID3 tags (Title, Artist, Album, Composer, Genre,
-                                    etc).
-                                    Built-in editor allows direct modification and instant saving.</p>
-                            </article>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane" data-tab-pane="photo">
-                        <div class="tab-panel metadata-tab-panel">
-                            <div class="tab-stage metadata-photo metadata-gallery-stage metadata-stage-live" role="img"
-                                aria-label="Photo metadata placeholder interface">
-                                <div class="metadata-gallery metadata-gallery-single">
-                                    <figure
-                                        class="metadata-real-shot metadata-real-shot-portrait metadata-real-shot-fade">
-                                        <img src="assets/metadata/photo-main.png" alt="Photo metadata panel screenshot"
-                                            class="metadata-real-image metadata-real-image-top">
-                                    </figure>
-                                    <div class="metadata-info-stack">
-                                        <div class="metadata-float-card metadata-float-top">
-                                            <span class="hero-tag">EXIF</span>
-                                            <div class="detail-line long"></div>
-                                            <div class="detail-line med"></div>
-                                        </div>
-                                        <div class="metadata-float-card metadata-float-bottom">
-                                            <span class="hero-tag">Lens / GPS</span>
-                                            <div class="detail-line accent long"></div>
-                                            <div class="detail-line short"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <article class="tab-copy">
-                                <p data-lang="zh">智能提取 Exif 元数据，涵盖相机型号、镜头参数、ISO、光圈、快门速度、拍摄时间及 GPS
-                                    地理位置信息。为摄影师提供精确的参数参考，并支持将拍摄时间用于文件名中。</p>
-                                <p data-lang="en">Intelligently extracts Exif metadata including Camera Model, Lens,
-                                    ISO, Aperture, Shutter Speed, Date Taken, and GPS. Provides precise data for
-                                    photographers and supports using capture time in filenames.</p>
-                            </article>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane" data-tab-pane="video">
-                        <div class="tab-panel metadata-tab-panel">
-                            <div class="tab-stage metadata-video metadata-gallery-stage metadata-stage-live" role="img"
-                                aria-label="Video metadata placeholder interface">
-                                <div class="metadata-gallery metadata-gallery-single">
-                                    <figure
-                                        class="metadata-real-shot metadata-real-shot-portrait metadata-real-shot-fade">
-                                        <img src="assets/metadata/video-main.png" alt="Video metadata panel screenshot"
-                                            class="metadata-real-image metadata-real-image-top">
-                                    </figure>
-                                    <div class="metadata-info-stack">
-                                        <div class="metadata-float-card metadata-float-top">
-                                            <span class="hero-tag">Codec / FPS</span>
-                                            <div class="detail-line long"></div>
-                                            <div class="detail-line med"></div>
-                                        </div>
-                                        <div class="metadata-float-card metadata-float-bottom">
-                                            <span class="hero-tag">Tracks / Subs</span>
-                                            <div class="detail-line accent long"></div>
-                                            <div class="detail-line short"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <article class="tab-copy">
-                                <p data-lang="zh">
-                                    完整展示视频技术参数：编码格式、分辨率、比特率、帧率。深度解析多媒体结构，显示音视频轨道数量、字幕语言及精确时长，帮您快速掌握视频文件的技术细节。</p>
-                                <p data-lang="en">Displays full technical specs: Codec, Resolution, Bitrate, Frame
-                                    Rate. Deep structural analysis shows track counts, subtitle languages, and
-                                    precise
-                                    duration, giving you full control over video details.</p>
-                            </article>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="shell">
-                <div class="feature-grid">
-                    <article class="copy-card">
-                        <h2 data-lang="zh">智能筛选系统</h2>
-                        <h2 data-lang="en">Intelligent Filtering System</h2>
-                        <p data-lang="zh">
-                            多维度精确定位，海量文件从容管理。支持9大筛选类型的自由组合，通过与/或逻辑关系和分组功能构建复杂筛选条件，配合快速文本搜索和预设筛选方案，无论文件数量多少，都能快速找到目标文件。
-                        </p>
-                        <p data-lang="en">Multi-dimensional precision targeting for effortless management of massive
-                            file collections. Supports flexible combination of 9 major filter types through AND/OR
-                            logic relationships and grouping functions. Combined with quick text search and preset
-                            filter schemes, quickly locate target files regardless of quantity.</p>
-                    </article>
-
-                    <div class="stage-card filters-stage carousel-stage" id="filters-carousel" role="region"
-                        aria-label="Intelligent filtering showcase carousel">
-                        <div class="carousel-track-container">
-                            <ul class="carousel-track">
-                                <li class="carousel-slide is-active"><img src="assets/filter/filter-text-01.png"
-                                        alt="Quick Text Search" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/filter/filter-editor-02.png"
-                                        alt="Filter Editor Interface" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/filter/filter-advanced-03.png"
-                                        alt="Advanced Filtering Scenarios" class="carousel-image"></li>
-                            </ul>
-                        </div>
-                        <div class="carousel-nav">
-                            <button class="carousel-indicator is-active" aria-label="Slide 1"></button>
-                            <button class="carousel-indicator" aria-label="Slide 2"></button>
-                            <button class="carousel-indicator" aria-label="Slide 3"></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="feature-grid reverse">
-                    <article class="copy-card">
-                        <h2 data-lang="zh">灵活的布局切换</h2>
-                        <h2 data-lang="en">Flexible Layout Switching</h2>
-                        <p data-lang="zh">工作区布局随心切换，完美适配不同工作场景和个人偏好。通过工具栏的布局切换按钮，一键在水平布局和垂直布局之间自由切换，让您的工作空间始终保持最佳状态。</p>
-                        <p data-lang="en">Switch workspace layouts effortlessly to perfectly adapt to different work
-                            scenarios and personal preferences. With the layout toggle button in the toolbar,
-                            seamlessly switch between horizontal and vertical layouts with one click, keeping your
-                            workspace always optimized.</p>
-                    </article>
-
-                    <div class="stage-card layout-stage carousel-stage" id="layout-carousel" role="region"
-                        aria-label="Flexible layout showcase carousel">
-                        <div class="carousel-track-container">
-                            <ul class="carousel-track">
-                                <li class="carousel-slide is-active"><img src="assets/layout/horizontal.png"
-                                        alt="Horizontal Layout" class="carousel-image"></li>
-                                <li class="carousel-slide"><img src="assets/layout/vertical.png" alt="Vertical Layout"
-                                        class="carousel-image"></li>
-                            </ul>
-                        </div>
-                        <div class="carousel-nav">
-                            <button class="carousel-indicator is-active" aria-label="Slide 1"></button>
-                            <button class="carousel-indicator" aria-label="Slide 2"></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section" id="security">
-            <div class="shell">
-                <div class="security-card">
-                    <div>
-                        <h2 data-lang="zh">安全与隐私</h2>
-                        <h2 data-lang="en">Security &amp; Privacy</h2>
-                        <p data-lang="zh">Lightning Renamer 完全遵守 macOS
-                            沙盒(Sandbox)安全机制。您的所有文件处理均在本地进行，网络权限仅用于加载必要的在线文档，绝无上传行为。</p>
-                        <p data-lang="en">Lightning Renamer fully complies with macOS Sandbox security mechanisms. All
-                            processing is 100% local. No files are ever uploaded.</p>
-                        <div class="hero-actions">
-                            <a href="privacy.html" class="hero-tag">
-                                <span data-lang="zh">查看隐私政策</span>
-                                <span data-lang="en">View Privacy Policy</span>
-                            </a>
-                            <a href="terms.html" class="hero-tag">
-                                <span data-lang="zh">查看用户协议</span>
-                                <span data-lang="en">View Terms</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="security-visual" aria-hidden="true">
-                        <div class="security-document">
-                            <span class="security-document-fold"></span>
-                            <span class="security-document-line line-1"></span>
-                            <span class="security-document-line line-2"></span>
-                            <span class="security-document-line line-3"></span>
-                            <span class="security-document-line line-4"></span>
-                        </div>
-                        <div class="security-lock-icon">
-                            <span class="security-lock-arch"></span>
-                            <span class="security-lock-body"></span>
-                            <span class="security-lock-keyhole"></span>
-                        </div>
-                        <div class="security-badge">
-                            <span class="security-badge-dot"></span>
-                            <span data-lang="zh">本地处理</span>
-                            <span data-lang="en">Local Only</span>
-                        </div>
-                        <div class="security-shield">
-                            <svg class="security-shield-svg" viewBox="0 0 180 210" aria-hidden="true" focusable="false">
-                                <path
-                                    d="M90 8C116 20 141 27 158 31V86C158 132 133 170 90 202C47 170 22 132 22 86V31C39 27 64 20 90 8Z" />
-                            </svg>
-                            <span class="security-shield-mark mark-1"></span>
-                            <span class="security-shield-mark mark-2"></span>
-                            <span class="security-shield-mark mark-3"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="shell">
-            <div class="footer-card">
-                <div class="footer-links">
-                    <a href="index.html" class="footer-link">Lightning Renamer</a>
-                    <a href="rule-guides/" class="footer-link">
-                        <span data-lang="zh">规则指南</span>
-                        <span data-lang="en">Rule Guides</span>
-                    </a>
-                    <a href="privacy.html" class="footer-link">
-                        <span data-lang="zh">隐私政策</span>
-                        <span data-lang="en">Privacy</span>
-                    </a>
-                    <a href="terms.html" class="footer-link">
-                        <span data-lang="zh">用户协议</span>
-                        <span data-lang="en">Terms</span>
-                    </a>
-                </div>
-                <div class="footer-copy">
-                    <span data-lang="zh">© 2026 Lightning Renamer. 保留所有权利。</span>
-                    <span data-lang="en">© 2026 Lightning Renamer. All rights reserved.</span>
-                </div>
-            </div>
+        <div class="hero-media-wrap reveal">
+          <figure class="hero-media" data-hero-preview>
+            <img src="assets/hero/mainworkspace-light.png" alt="Lightning Renamer workspace showing rules, file previews, and metadata" />
+            <figcaption class="hero-media-caption">
+              <span><strong>The workspace, at a glance.</strong> Rules on the left. Decisions in the middle. Context on the right.</span>
+            </figcaption>
+          </figure>
         </div>
-    </footer>
+      </div>
+    </section>
+
+    <section class="feature-band" id="rules" aria-labelledby="rules-title">
+      <div class="shell">
+        <div class="feature-intro">
+          <div class="feature-heading reveal">
+            <p class="section-kicker">01 / Rules</p>
+            <h2 id="rules-title">A sequence you can see.</h2>
+          </div>
+          <div class="feature-copy reveal">
+            <p>Build a renaming workflow from focused operations. Replace, insert, delete, or map text; clean and normalize names; control characters, capitalization, and extensions; generate ordered, padded, or random values; and use regular expressions, prepared input, or scripts for more specific logic.</p>
+            <ul class="feature-list">
+              <li>Combine and reorder operations with drag and drop</li>
+              <li>Use file metadata in names and save useful rule presets</li>
+              <li>Preview each result before changes reach disk</li>
+            </ul>
+            <a class="text-link feature-guide-link" href="rule-guides/">Explore all rule guides ↗</a>
+          </div>
+        </div>
+        <div class="media-group media-group--rules reveal" aria-label="Rule building views">
+          <figure class="media-card media-card--primary">
+            <div class="media-viewport">
+              <img src="assets/rules/rule-main.png" alt="Lightning Renamer workspace with a stacked rule sequence and live filename previews" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Build the sequence.</strong> Reorder rules while every filename updates beside them.</span><span>Main workspace</span></figcaption>
+          </figure>
+          <figure class="media-card media-card--support">
+            <div class="media-viewport">
+              <img src="assets/rules/rule-metadata-selector.png" alt="Metadata tag selector with audio, image, file, and video fields" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Choose real metadata.</strong> Search fields by file type and add them to a rule.</span><span>Tag selector</span></figcaption>
+          </figure>
+          <figure class="media-card media-card--support">
+            <div class="media-viewport">
+              <img src="assets/rules/rule-preset.png" alt="Rule preset browser showing a reusable saved sequence" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Keep useful setups.</strong> Save a full sequence and bring it back in one move.</span><span>Presets</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-band feature-band--soft" id="scope" aria-labelledby="scope-title">
+      <div class="shell">
+        <div class="feature-intro">
+          <div class="feature-heading reveal">
+            <p class="section-kicker">02 / Rule Scope</p>
+            <h2 id="scope-title">Apply each rule where it belongs.</h2>
+          </div>
+          <div class="feature-copy reveal">
+            <p>Rule Scope targets each operation to the files it should process. In a mixed folder, one rule can handle images, another can handle documents matching a filter, and a different rule can process the remaining files.</p>
+            <ul class="feature-list">
+              <li>Assign selected files to a specific rule</li>
+              <li>Combine filters with scope to build precise file groups</li>
+              <li>Review every file included in a rule's scope</li>
+            </ul>
+          </div>
+        </div>
+        <div class="media-group media-group--scope reveal" aria-label="Rule scope views">
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/scope/scope-file.png" alt="File context menu assigning selected files to a specific rename rule" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Assign the selected files.</strong> Add a selection to the rule that should process it.</span><span>File scope</span></figcaption>
+          </figure>
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/scope/scope-view.png" alt="Rule scope view showing only the files matched by the selected rename rule" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Review the exact set.</strong> See every file included before the rule is applied.</span><span>Scope view</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-band" id="metadata" aria-labelledby="metadata-title">
+      <div class="shell">
+        <div class="feature-intro">
+          <div class="feature-heading reveal">
+            <p class="section-kicker">03 / Metadata</p>
+            <h2 id="metadata-title">Read the file before you rename it.</h2>
+          </div>
+          <div class="feature-copy reveal">
+            <p>Select a file to inspect its metadata beside the rename workflow. Lightning Renamer extracts technical and descriptive information across audio, image, and video formats, and lets supported fields become part of a new filename.</p>
+            <ul class="feature-list">
+              <li>Audio tags and editable fields for supported formats</li>
+              <li>Photo EXIF details including camera, lens, date, and GPS</li>
+              <li>Video codec, dimensions, frame rate, tracks, and duration</li>
+            </ul>
+          </div>
+        </div>
+        <div class="media-group media-group--metadata reveal" aria-label="Audio, photo, and video metadata views">
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/metadata/audio-main.png" alt="Audio metadata view showing cover art, common tags, and technical file details" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Inspect audio details.</strong> Artwork, tags, and technical information stay together.</span><span>Audio</span></figcaption>
+          </figure>
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/metadata/photo-main.png" alt="Photo metadata view showing EXIF, camera, lens, capture, and GPS details" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Read capture context.</strong> Camera, lens, exposure, date, and location remain easy to scan.</span><span>Photo</span></figcaption>
+          </figure>
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/metadata/video-main.png" alt="Video metadata view showing codec, dimensions, frame rate, tracks, and duration" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Understand the media structure.</strong> Codec, tracks, subtitles, and duration appear in one place.</span><span>Video</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-band feature-band--soft" id="filtering" aria-labelledby="filtering-title">
+      <div class="shell">
+        <div class="feature-intro">
+          <div class="feature-heading reveal">
+            <p class="section-kicker">04 / Filtering</p>
+            <h2 id="filtering-title">Find the exact set.</h2>
+          </div>
+          <div class="feature-copy reveal">
+            <p>Start broad, then narrow with confidence. Search, combine conditions, and keep the current filter visible while you work through the files that matter.</p>
+            <ul class="feature-list">
+              <li>Quick text search for an immediate first pass</li>
+              <li>Current filters stay visible and easy to clear</li>
+              <li>AND / OR logic for layered conditions</li>
+            </ul>
+          </div>
+        </div>
+        <div class="media-group media-group--filtering reveal" aria-label="Filtering workflow views">
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/filter/filter-text-01.png" alt="Lightning Renamer text search with file-kind filter menu open" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Start with a quick search.</strong> Add a file property without breaking your flow.</span><span>Quick filter</span></figcaption>
+          </figure>
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/filter/filter-editor-02.png" alt="Current filter popover showing the active text condition" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Keep the set legible.</strong> Review or clear active filters from one compact view.</span><span>Current filters</span></figcaption>
+          </figure>
+          <figure class="media-card media-card--compact">
+            <div class="media-viewport">
+              <img src="assets/filter/filter-advanced-03.png" alt="Advanced filter editor with nested file kind and size conditions" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Go deeper when needed.</strong> Combine groups and conditions with explicit logic.</span><span>Advanced filter</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-band" id="layout" aria-labelledby="layout-title">
+      <div class="shell">
+        <div class="feature-intro">
+          <div class="feature-heading reveal">
+            <p class="section-kicker">05 / Layout</p>
+            <h2 id="layout-title">Choose the workspace that fits.</h2>
+          </div>
+          <div class="feature-copy reveal">
+            <p>Switch the workspace between horizontal and vertical arrangements to match the display, file set, and task in front of you. The same tools remain available in either layout.</p>
+            <ul class="feature-list">
+              <li>Horizontal layout for wide displays</li>
+              <li>Vertical layout when more height is useful</li>
+              <li>Switch directly from the workspace toolbar</li>
+            </ul>
+          </div>
+        </div>
+        <div class="media-group media-group--layout reveal" aria-label="Horizontal and vertical workspace layouts">
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/layout/horizontal.png" alt="Lightning Renamer horizontal workspace layout" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Use the available width.</strong> Keep rules and files side by side on a wide display.</span><span>Horizontal</span></figcaption>
+          </figure>
+          <figure class="media-card">
+            <div class="media-viewport">
+              <img src="assets/layout/vertical.png" alt="Lightning Renamer vertical workspace layout" loading="lazy" />
+            </div>
+            <figcaption class="media-caption"><span><strong>Make room vertically.</strong> Stack the workspace when height is the better fit.</span><span>Vertical</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-band feature-band--soft" id="security" aria-labelledby="security-title">
+      <div class="shell">
+        <div class="feature-intro">
+          <div class="feature-heading reveal">
+            <p class="section-kicker">06 / Security &amp; Privacy</p>
+            <h2 id="security-title">Your files stay on your Mac.</h2>
+          </div>
+          <div class="feature-copy reveal">
+            <p>Lightning Renamer operates within the macOS App Sandbox. File reading, renaming, and writing happen locally on your device, and files and filenames are not uploaded.</p>
+            <ul class="feature-list">
+              <li>Local processing for file operations</li>
+              <li>Access limited to locations you authorize</li>
+              <li>No file or filename uploads</li>
+            </ul>
+            <div class="legal-links">
+              <a class="text-link" href="privacy.html">View Privacy Policy ↗</a>
+              <a class="text-link" href="terms.html">View Terms ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-row">
+      <span>Lightning Renamer · A Mac utility for deliberate file work.</span>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="rule-guides/">Rule Guides</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach((node) => revealObserver.observe(node));
+    } else {
+      document.querySelectorAll('.reveal').forEach((node) => node.classList.add('is-visible'));
+    }
+  </script>
 </body>
-
 </html>
