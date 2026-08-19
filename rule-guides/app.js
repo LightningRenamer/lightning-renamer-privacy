@@ -137,6 +137,20 @@
     return sectionElement;
   };
 
+  const revealContent = () => {
+    article.querySelectorAll(":scope > *").forEach((node) => {
+      node.classList.add("reveal");
+      node.classList.remove("is-visible");
+    });
+
+    if (typeof initReveal === "function") {
+      initReveal(article);
+      return;
+    }
+
+    article.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-visible"));
+  };
+
   const renderTutorial = (tutorial, moveFocus = false) => {
     document.title = `${tutorial.name} - Lightning Renamer`;
     article.replaceChildren();
@@ -160,6 +174,8 @@
       window.scrollTo({ top: 0, behavior: "auto" });
       title.focus({ preventScroll: true });
     }
+
+    revealContent();
   };
 
   const renderOptions = (rule) => {
@@ -331,6 +347,8 @@
       window.scrollTo({ top: 0, behavior: "auto" });
       title.focus({ preventScroll: true });
     }
+
+    revealContent();
   };
 
   const adjacentLink = (rule, label) => {
